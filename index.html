@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우리 부부 보험 보장내역</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1115;--surface1:#171a20;--surface2:#1e232b;--border:#2a3038;--border-strong:#3a4149;--text1:#edf0f3;--text2:#9aa4b2;--text3:#5f6773;
+--mint:#4ade9a;--mint-dim:#1f3a2c;--gold:#e8b04b;--gold-dim:#3a2f18;--blue:#5b9bd5;--blue-dim:#1c2c3a;--red:#e2635a;--divider-gray:#3a4149;--mark:#6b5a12;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
+body.light-theme{--bg:#fff;--surface1:#fff;--surface2:#f7f8fa;--border:#f0f1f3;--border-strong:#e5e7eb;--text1:#191f28;--text2:#4e5968;--text3:#8b95a1;
+--mint:#178a5c;--mint-dim:#e6f7f0;--gold:#a8720f;--gold-dim:#fbf3e2;--blue:#2f6fb0;--blue-dim:#eaf3fb;--red:#c33a2f;--divider-gray:#f2f2f2;--mark:#fde68a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text1);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased;transition:background .15s,color .15s;padding-bottom:60px;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,textarea:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-family:'Roboto',sans-serif;letter-spacing:-.4px}
+.owner-tabs{display:flex;gap:8px;padding:16px 20px 0}
+.owner-tab,.range-tab{text-align:center;border:1px solid var(--border);background:var(--surface1);color:var(--text2);cursor:pointer;font-weight:500}
+.owner-tab{flex:1;padding:10px 0;border-radius:10px;font-size:14px}
+.range-tab{padding:6px 12px;border-radius:8px;font-size:12px;white-space:nowrap;flex:none}
+.owner-tab.active,.range-tab.active{background:var(--mint-dim);border-color:var(--mint);color:var(--mint)}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 4px}
+.metric{background:var(--surface1);border:1px solid var(--border);border-radius:12px;padding:14px}
+.metric.full{grid-column:1/-1}
+.metric .label{font-size:12px;color:var(--text2);margin-bottom:6px}
+.metric .value{font-size:19px;font-weight:500}
+.metric .sub{font-size:12px;color:var(--text3);margin-top:2px}
+.panel-wrap{padding:0 20px}
+.sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:12px 20px 4px}
+.search{width:100%;height:42px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:10px;padding:0 14px;font-size:15px}
+.search::placeholder{color:var(--text3)}
+.scroll-row{display:flex;gap:6px;overflow-x:auto;padding:10px 20px 2px;scrollbar-width:none}
+.scroll-row::-webkit-scrollbar{display:none}
+.vtabs{display:flex;gap:6px;padding:10px 20px 14px}
+.vtabs .range-tab{flex:1}
+.divider{height:12px;background:var(--divider-gray)}
+.panel-title{font-size:22px;font-weight:700;margin:22px 0 4px;display:flex;justify-content:space-between;align-items:center}
+.panel-caption{font-size:11.5px;color:var(--text3);margin-bottom:10px}
+.empty{font-size:13px;color:var(--text3);padding:28px 0;text-align:center}
+.acc{border-bottom:1px dashed var(--border)}
+.acc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 0;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+.acc-name{font-size:16px;font-weight:400}
+.acc-sub{font-size:12px;color:var(--text3);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.acc-right{text-align:right;flex:none;display:flex;gap:6px;align-items:center}
+.acc-prem{font-size:17px}.acc-prem small{display:block;font-size:11px;color:var(--text3);font-family:inherit;letter-spacing:0}
+.chev{transition:transform .15s;color:var(--text3)}
+.acc.open .chev{transform:rotate(180deg)}
+.acc.exp .acc-name,.acc.exp .acc-prem{color:var(--text2)}
+.acc-body{display:none;padding:0 0 20px}
+.acc.open .acc-body{display:block}
+.badge{font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid currentColor;font-weight:500}
+.owner-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text2);padding:0 0 6px}
+.owner-row select{background:var(--surface2);border:1px solid var(--border-strong);border-radius:7px;height:32px;padding:0 8px;font-size:13px}
+.note{font-size:11.5px;color:var(--text3);margin:2px 0 6px}
+.gt{font-size:13px;font-weight:600;color:var(--mint);margin:16px 0 2px}
+details.it{border-bottom:1px solid var(--border)}
+details.it:last-child{border-bottom:0}
+details.it summary{list-style:none;display:flex;justify-content:space-between;gap:12px;padding:12px 0;cursor:pointer}
+details.it summary::-webkit-details-marker{display:none}
+.nm{flex:1;min-width:0;font-size:15px}.nm small{display:block;font-size:11.5px;color:var(--text3);margin-top:3px}
+.am{text-align:right;font-size:15px;font-weight:500;flex:none}.am small{font-size:11.5px;color:var(--text3);font-weight:400;font-family:inherit}
+.rn{color:var(--gold);font-weight:500;margin-left:6px}
+.nm small .rn:first-child{margin-left:0}
+.dsc{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:12.5px;color:var(--text2);line-height:1.6}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.bk{padding:14px 0;border-bottom:1px dashed var(--border)}
+.bk-title{font-size:16px;margin-bottom:10px}
+.bk-line{margin-bottom:10px}
+.bk-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;align-items:flex-start}
+.bk-name{font-size:14px}.bk-name small{display:block;font-size:11.5px;color:var(--text2);margin-top:2px}
+.bk-amt{font-size:14px;font-weight:600}
+.track{height:6px;background:var(--surface2);border-radius:3px}
+.fill{height:100%;width:var(--w,0%);border-radius:3px;background:var(--c,var(--mint))}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.add-btn{background:none;border:1px solid var(--border-strong);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+.add-btn:active{transform:scale(.97)}
+.json-panel{display:none;margin-top:6px}
+.json-panel.open{display:block}
+textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;font:12px/1.5 ui-monospace,Menlo,monospace;padding:10px}
+.btn-primary,.btn-ghost{height:40px;padding:0 14px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}
+.btn-primary{background:var(--mint);border:0;color:var(--bg)}
+.btn-ghost{background:none;border:1px solid var(--border-strong)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--surface2);border:1px solid var(--border-strong);padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:50;max-width:90%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="owner-tabs" id="pp"></div>
+<div class="summary" id="stats"></div>
+<div class="sticky"><input class="search" type="search" id="q" placeholder="보장 검색 (암, 뇌졸중, 입원, 수술, 보험사…)" aria-label="보장 검색"></div>
+<div class="scroll-row" id="ig"></div>
+<div class="scroll-row" id="tg"></div>
+<div class="vtabs" id="vw"><button class="range-tab" data-v="ins">보험사별 보기</button><button class="range-tab" data-v="cmp">보장 비교</button></div>
+<div class="divider"></div>
+<div class="panel-wrap" id="out"></div>
+<div class="divider" style="margin-top:28px"></div>
+<div class="panel-wrap">
+  <div class="header-actions">
+    <button class="add-btn" id="jt">JSON 보기</button>
+    <button class="add-btn" id="th">라이트 모드</button>
+  </div>
+  <div class="panel-title">JSON 편집</div>
+  <div class="json-panel" id="jp">
+    <div class="panel-caption">보험사, 보험료, 보장 항목을 고친 뒤 적용하면 이 브라우저에 저장돼요. 백업하려면 복사해서 메모해 두세요.</div>
+    <textarea id="js" spellcheck="false" aria-label="JSON 데이터"></textarea>
+    <div class="actions"><button class="btn-primary" id="ap">적용하고 저장</button><button class="btn-ghost" id="cp">복사</button><button class="btn-ghost" id="rs">기본값 복원</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="application/json" id="seed">{
+ "version":10,
+ "people":[{"id":"me","name":"나","color":"blue"},{"id":"wife","name":"와이프","color":"gold"}],
+ "policies":[
+  {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"담보별로 다름 (2010.12.21 ~ / 갱신형은 ~2028.12.21)","note":"월 4만원. 실손(입원·통원 의료비) 포함. 갱신형 담보는 3년 갱신이고 다음 갱신일은 2028.12.21이에요. 갱신 시 보험료가 달라질 수 있어요",
+   "items":[
+    {"tag":"사망/장해","rider":"일반상해사망후유장해","name":"일반상해 사망·후유장해","amount":50000000,"unit":"once","desc":"사고로 사망 또는 후유장해 발생 시 지급","premium":7250,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"사망/장해","rider":"교통상해사망.후유장해","name":"교통상해 사망·후유장해","amount":50000000,"unit":"once","desc":"교통사고로 사망 또는 후유장해 발생 시 지급","premium":4950,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"사망/장해","rider":"대중교통이용중교통상해사망후유장해","name":"대중교통 이용 중 교통상해 사망·후유장해","amount":300000000,"unit":"once","desc":"대중교통 이용 중 교통사고로 사망 또는 후유장해 발생 시 지급","premium":990,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"사망/장해","rider":"질병사망","name":"질병 사망","amount":20000000,"unit":"once","desc":"질병으로 사망하거나 80% 이상 후유장해 발생 시 지급","premium":4260,"period":"2010.12.21 ~ 2042.12.21"},
+    {"tag":"암","rider":"갱신형 암진단비","name":"암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"보장개시일 이후 암으로 진단 확정 시 최초 1회한 지급 (1년 미만 50% 지급). 상피내암·기타피부암·경계성종양·갑상샘암은 각각 최초 1회한 20% 지급 (1년 미만 10%).","premium":3440,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"암","rider":"갱신형 고액암진단비","name":"고액암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"고액암 보장개시일 이후 고액암으로 진단 시 최초 1회한 지급 (1년 미만 50% 지급)","premium":560,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"뇌/심장","rider":"갱신형 뇌졸중진단비","name":"뇌졸중 진단비 (갱신형)","amount":10000000,"unit":"once","desc":"뇌졸중으로 진단 확정 시 최초 1회한 지급","premium":1000,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"뇌/심장","rider":"갱신형 급성심근경색증진단","name":"급성심근경색증 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"급성심근경색증으로 진단 확정 시 최초 1회한 지급","premium":1100,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"뇌/심장","rider":"양성뇌종양진단비","name":"양성뇌종양 진단비","amount":3000000,"unit":"once","desc":"양성뇌종양으로 진단 확정 시 최초 1회한 지급","premium":51,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"충수염수술비","name":"충수염 수술비","amount":500000,"unit":"once","desc":"충수(맹장)염으로 진단 확정되고 수술 시 최초 1회한 지급","premium":92,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"조혈모세포이식수술비","name":"조혈모세포이식 수술비","amount":20000000,"unit":"once","desc":"조혈모세포이식 수술 시 최초 1회한 지급","premium":100,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"컴퓨터질환(VDT증후군)수술비","name":"컴퓨터질환(VDT증후군) 수술비","amount":1000000,"unit":"once","desc":"컴퓨터질환(VDT증후군)으로 진단 확정되고 수술 시 지급","premium":15,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"5대장기이식수술비","name":"5대장기 이식 수술비","amount":20000000,"unit":"once","desc":"질병 또는 상해로 인한 장기수혜자로서 병원 또는 의원(한방병원, 한의원 포함) 등에서 5대장기이식수술을 받은 경우 최초 1회한 지급","premium":212,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"각막이식수술비","name":"각막 이식 수술비","amount":10000000,"unit":"once","desc":"질병 또는 상해로 인한 장기수혜자로서 각막이식 수술 시 최초 1회한 지급","premium":17,"period":"2010.12.21 ~ 2062.12.21"},
+    {"tag":"수술","rider":"상해흉터복원수술비","name":"상해 흉터 복원 수술비","amount":5000000,"unit":"once","desc":"사고로 안면부, 상지, 하지에 반흔이나 추상장해, 신체의 기형이나 기능 장해가 발생하여 원상회복을 목적으로 2년 이내 성형수술 시 500만원 한도 보상 (안면부 수술 1CM당 14만원, 상/하지 수술 1CM당 7만원, 상/하지 수술 3CM 이상 시 보상)","premium":242,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 질병입원의료비(A)","name":"질병 입원 의료비 (갱신형)","amount":50000000,"unit":"limit","desc":"질병으로 입원 치료 시 365일 한 가입금액 한도로 보상. 국민건강보험 또는 의료급여법 적용 시: 입원실료·입원제비용·입원수술비 본인부담액의 90% 해당액. 병실료 차액: 기준병실과 실제 병실의 차액 중 50% (1일 평균 10만원 한도). 비적용 시: 본인부담액의 40% 해당액.","premium":8137,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 상해입원의료비(A)","name":"상해 입원 의료비 (갱신형)","amount":50000000,"unit":"limit","desc":"상해로 입원 치료 시 365일 한 가입금액 한도로 보상. 국민건강보험 또는 의료급여법 적용 시: 입원실료·입원제비용·입원수술비 본인부담액의 90% 해당액. 병실료 차액: 기준병실과 실제 병실의 차액 중 50% (1일 평균 10만원 한도). 비적용 시: 본인부담액의 40% 해당액.","premium":2195,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 질병통원의료비(A)","name":"질병 통원 [외래]","amount":250000,"unit":"limit","desc":"질병로 통원 치료 시 방문 1회당 공제금액(의원 1만원, 종합병원 1만5천원, 종합전문요양기관 2만원) 차감 후 가입금액 한도로 보상 (매년 계약해당일로부터 1년간 방문회수 180회 한도). 건강보험·의료급여 적용 시: 외래제비용, 외래수술비 본인부담액 중 공제금액을 차감한 금액. 비적용 시: 본인부담액 중 공제금액을 차감한 40% 해당액.","premium":18380,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 질병통원의료비(A)","name":"질병 통원 [처방조제]","amount":50000,"unit":"limit","desc":"질병로 통원 치료 시 처방전 1건당 공제금액(8천원) 차감 후 가입금액 한도로 보상 (매년 계약해당일로부터 1년간 처방전 180건 한도). 건강보험·의료급여 적용 시: 처방전에 따라 조제되는 약제비, 약사조제료 본인부담액 중 공제금액을 차감한 금액. 비적용 시: 본인부담액 중 공제금액을 차감한 40% 해당액.","premium":1958,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 상해통원의료비(A)","name":"상해 통원 [외래]","amount":250000,"unit":"limit","desc":"상해로 통원 치료 시 방문 1회당 공제금액(의원 1만원, 종합병원 1만5천원, 종합전문요양기관 2만원) 차감 후 가입금액 한도로 보상 (매년 계약해당일로부터 1년간 방문회수 180회 한도). 건강보험·의료급여 적용 시: 외래제비용, 외래수술비 본인부담액 중 공제금액을 차감한 금액. 비적용 시: 본인부담액 중 공제금액을 차감한 40% 해당액.","premium":2640,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"입원/통원","rider":"갱신형 상해통원의료비(A)","name":"상해 통원 [처방조제]","amount":50000,"unit":"limit","desc":"상해로 통원 치료 시 처방전 1건당 공제금액(8천원) 차감 후 가입금액 한도로 보상 (매년 계약해당일로부터 1년간 처방전 180건 한도). 건강보험·의료급여 적용 시: 처방전에 따라 조제되는 약제비, 약사조제료 본인부담액 중 공제금액을 차감한 금액. 비적용 시: 본인부담액 중 공제금액을 차감한 40% 해당액.","premium":18,"period":"2025.12.21 ~ 2028.12.21"},
+    {"tag":"상해/재해","rider":"골절(치아파절제외)진단비","name":"골절(치아파절 제외) 진단비","amount":200000,"unit":"once","desc":"사고로 인한 골절(치아파절 제외) 진단 시 지급","premium":1088,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"상해/재해","rider":"화상진단비","name":"화상 진단비","amount":200000,"unit":"once","desc":"사고로 인한 심재성 2도 이상 화상 진단 시 지급","premium":176,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"상해/재해","rider":"깁스치료비","name":"깁스 치료비","amount":100000,"unit":"once","desc":"질병 또는 상해로 인하여 깁스(CAST) 치료를 받았을 경우 지급","premium":462,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"기타","rider":"일상생활중배상책임(II)","name":"일상생활 중 배상책임","amount":100000000,"unit":"limit","desc":"피보험자 본인 또는 배우자가 주택의 소유, 사용, 관리 또는 일상생활에 기인하는 사고로 법률상 배상책임 부담 시 지급 (자기부담금: 대물 20만원)","premium":207,"period":"2010.12.21 ~ 2082.12.21"},
+    {"tag":"기타","rider":"이륜차운전중상해부보장","name":"이륜차 운전 중 상해 부보장","amount":0,"unit":"once","desc":"이륜차 운전 중 상해는 보장하지 않음"},
+    {"tag":"기타","rider":"보험료자동납입특약","name":"보험료 자동납입 특약","amount":0,"unit":"once","desc":""}
+   ]},
+  {"id":"p3","owner":"me","insurer":"흥국화재","product":"무배당 행복을 多주는 가족사랑종합보험(21.08)_2종(무해지 납입후 표준환급률지급형)","premium":50124,"period":"2021.11.05 ~ (담보별 2041.11.05 또는 2062.11.05)","note":"월 50,124원. 질병후유장해(3~100%) 보험료 8,980원은 화면에서 잘려서 월 합계에서 계산한 값이에요",
+   "items":[
+    {"tag":"사망/장해","rider":"일반상해후유장해(80%이상)","name":"일반상해후유장해(80%이상)","amount":1000000,"unit":"once","desc":"보험기간 중 상해로 장해분류표에서 정한 장해지급률이 80% 이상에 해당하는 후유장해 상태가 된 경우 금액 지급 ※ 최초 1회","premium":11,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"사망/장해","rider":"질병후유장해(80%이상)(감액없음)","name":"질병후유장해(80%이상)(감액없음)","amount":1000000,"unit":"once","desc":"보험기간 중 진단확정된 질병으로 장해분류표에서 정한 장해지급률 80% 이상에 해당하는 후유장해 상태가 된 경우 금액 지급 ※ 최초 1회","premium":36,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"사망/장해","rider":"일반상해사망","name":"일반상해사망","amount":1000000,"unit":"once","desc":"보험기간 중 상해의 직접결과로 사망한 경우(질병으로 인한 사망 제외) 금액 지급","premium":50,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"사망/장해","rider":"일반상해사망(추가)","name":"일반상해사망(추가)","amount":99000000,"unit":"once","desc":"보험기간 중 상해의 직접결과로 사망한 경우(질병으로 인한 사망 제외) 금액 지급. 일반상해사망 100만원과 합치면 상해사망 총 1억원이에요.","premium":2871,"period":"2021.11.05 ~ 2041.11.05"},
+    {"tag":"사망/장해","rider":"질병후유장해(3~100%)(감액없음)","name":"질병후유장해(3~100%)(감액없음)","amount":20000000,"unit":"once","desc":"보험기간 중 진단확정된 질병으로 장해분류표에서 정한 장해지급률이 3~100%에 해당하는 후유장해 상태가 된 경우 보험가입금액에 장해지급률을 곱하여 산출한 금액 지급","premium":8980,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"뇌/심장","rider":"뇌혈관질환진단비","name":"뇌혈관질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 뇌혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":17420,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"뇌/심장","rider":"허혈성심질환진단비","name":"허혈성심질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 허혈성심질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":9600,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"뇌/심장","rider":"특정심혈관질환진단비","name":"특정심혈관질환진단비","amount":10000000,"unit":"once","desc":"보험기간 중 특정심혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급 ※ 특정심혈관질환: 협심증, 기타 급성 허혈심장질환, 만성 허혈심장병, 발작성 빈맥, 심방세동 및 조동, 기타심장부정맥, 심부전","premium":8040,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"수술","rider":"허혈성심질환수술비","name":"허혈성심질환수술비","amount":5000000,"unit":"once","desc":"보험기간 중 허혈성심질환으로 진단확정되고 그 치료를 직접적인 목적으로 수술을 받은 때에는 수술 1회당 금액 지급 ※ 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":2300,"period":"2021.11.05 ~ 2062.11.05"},
+    {"tag":"수술","rider":"뇌혈관질환수술비","name":"뇌혈관질환수술비","amount":5000000,"unit":"once","premium":750,"period":"2021.11.05 ~ 2062.11.05","desc":"보험기간 중 뇌혈관질환으로 진단확정되고 그 치료를 직접적인 목적으로 수술을 받은 때에는 수술 1회당 금액 지급 ※ 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급"},
+    {"tag":"기타","rider":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","name":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","amount":100000,"unit":"once","desc":"보험기간 중 ① 암보장개시일 이후 암(유사암 제외)으로 진단받은 경우 ② 뇌졸중, 급성심근경색증, 말기만성폐질환, 말기간경화, 말기신부전증으로 진단받은 경우 ③ 상해 또는 진단확정된 질병으로 장해분류표에서 정한 장해지급률이 80% 이상에 해당하는 후유장해 상태가 된 경우, 이 중 한 가지 사유가 발생한 때에는 보험가입금액을 보험수익자에게 지급 ※ 최초 1회 ※ [암보장개시일] 보험계약일로부터 그날을 포함하여 90일이 지난 날의 다음날","premium":66,"period":"2021.11.05 ~ 2041.11.05"}
+   ]},
+  {"id":"p4","owner":"me","insurer":"예별손해보험","product":"무배당 건강명의 4대질병진단보험(1805)(1종)(해지환급금미지급형)(2183P)","premium":34800,"period":"2018.05.29 ~ 2062.05.29","note":"월 34,800원. 캡처에 보인 담보만 입력했어요. 담보별 보험료와 4대질병 중 다른 담보는 추가 가능해요",
+   "items":[
+    {"tag":"암","rider":"암진단비(소액암제외)","name":"암진단비(소액암제외)","amount":35000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29"},
+    {"tag":"암","rider":"소액암진단비","name":"소액암진단비","amount":10000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29"}
+   ]},
+  {"id":"p2","owner":"me","insurer":"대한생명","status":"paid","product":"(무)대한종신","premium":104750,"period":"","note":"보험료 납입이 완료됨 (종전 월납 104,750원). 종피 및 자녀특약은 앱 화면에서 생략됨",
+   "items":[
+    {"tag":"사망/장해","rider":"주계약","name":"사망 · 장해 1급","amount":50000000,"unit":"once","desc":"보험기간 중 사망하거나 장해등급분류표 1급 장해상태가 된 경우. 계약일로부터 2년 미만 경과 시 (재해 외 원인) 가입금액의 30% 지급."},
+    {"tag":"사망/장해","rider":"재해사망특약","name":"차량탑승 중 교통재해 사망 · 장해 1급","amount":50000000,"unit":"once","desc":""},
+    {"tag":"사망/장해","rider":"재해사망특약","name":"차량탑승 외 교통재해 사망 · 장해 1급","amount":37500000,"unit":"once","desc":""},
+    {"tag":"사망/장해","rider":"재해사망특약","name":"교통재해 외 재해 사망 · 장해 1급","amount":25000000,"unit":"once","desc":""},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 2급 (10년간 매년)","amount":25000000,"unit":"once","desc":"교통재해로 2급·3급 장해 시 지급사유 발생일 포함 10년간 매년 지급. 3급은 12,500,000원. 교통재해 외 재해는 1/2 지급."},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 3급 (10년간 매년)","amount":12500000,"unit":"once","desc":"교통재해 외 재해는 1/2 지급."},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 4급","amount":50000000,"unit":"once","desc":"4급·5급·6급 장해 시. 5급 25,000,000원 / 6급 12,500,000원. 교통재해 외 재해는 1/2 지급."},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"교통재해 4일 이상 입원","amount":200000,"unit":"visit","desc":"교통재해로 치료 목적 4일 이상 계속 입원 (1회당). 교통재해 외 재해는 1/2 지급."},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해골절 진단","amount":300000,"unit":"visit","desc":"재해를 직접 원인으로 재해골절 진단 확정 시 (1회당)."},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해 31일 이상 계속 입원","amount":500000,"unit":"once","desc":"재해 치료 목적 입원. 121일 이상 1,000,000원 / 181일 이상 2,000,000원."},
+    {"tag":"암","rider":"암보장특약","name":"암 진단비","amount":15000000,"unit":"once","desc":"책임개시일 이후 최초 암 진단 확정 (1회한). 계약해당일 기준 피보험자 45세 이후 최초 진단 시 1.5배 지급."},
+    {"tag":"암","rider":"암보장특약","name":"상피내암 진단비","amount":3000000,"unit":"once","desc":"최초 상피내암 진단 (1회한). 45세 이후 1.5배."},
+    {"tag":"암","rider":"암보장특약","name":"경계성종양 진단비","amount":3000000,"unit":"once","desc":"최초 경계성종양 진단 (1회한). 45세 이후 1.5배."},
+    {"tag":"암","rider":"암보장특약","name":"암 수술비","amount":3000000,"unit":"visit","desc":"암 치료 직접 목적 수술 (1회당)."},
+    {"tag":"암","rider":"암보장특약","name":"상피내암·경계성종양 수술비","amount":600000,"unit":"visit","desc":"치료 직접 목적 수술 (1회당)."},
+    {"tag":"암","rider":"암보장특약","name":"암 입원비","amount":75000,"unit":"day","desc":"암 치료 직접 목적 4일 이상 입원 (3일 초과 1일당, 120일 한도)."},
+    {"tag":"암","rider":"암보장특약","name":"상피내암·경계성종양 입원비","amount":15000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도)."},
+    {"tag":"뇌/심장","rider":"성인병보장특약","name":"뇌졸중 · 급성심근경색증 진단비","amount":15000000,"unit":"once","desc":"최초 진단 확정 시 각 1회한. 45세 이후 최초 진단 시 1.5배."},
+    {"tag":"수술","rider":"성인병보장특약","name":"성인 8대 특정질환 수술비","amount":3000000,"unit":"visit","desc":"입원 동반 수술 (1회당). 세부 내용은 약관 참조."},
+    {"tag":"입원/통원","rider":"성인병보장특약","name":"성인 8대 특정질환 입원비","amount":45000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도)."},
+    {"tag":"수술","rider":"수술보장특약","name":"질병·재해 수술 3종","amount":1500000,"unit":"visit","desc":"1종 300,000원 / 2종 750,000원 / 3종 1,500,000원."},
+    {"tag":"입원/통원","rider":"입원특약","name":"질병·재해 입원비","amount":10000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도)."}
+   ]}
+ ]
+}</script>
+
+<script>
+const SEED = JSON.parse(document.getElementById('seed').textContent);
+const KEY = 'ins-data-v1', TKEY = 'ins-theme';
+const TAGS = ['사망/장해','암','뇌/심장','수술','입원/통원','상해/재해','기타'];
+const UNIT = {once:'', day:'/일', visit:'/회', limit:' 한도'};
+const CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+let D = load(), st = {p:'all', i:'all', q:'', t:'all', v:'ins'}, flip = new Set();
+
+function load(){ try{ const s = localStorage.getItem(KEY); if(s){ const j = JSON.parse(s); if((j.version||1) >= (SEED.version||1)) return j; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){} }
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const person = id => D.people.find(p => p.id === id) || {name:'미지정', color:'text3'};
+const col = p => { const c = p.color || 'mint'; return c[0] === '#' ? c : `var(--${c})`; };
+function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 1800); }
+
+function won(n){
+  if(n === 0) return '0원';
+  const eok = Math.floor(n/1e8), man = Math.floor((n%1e8)/1e4), rest = n%1e4, o = [];
+  if(eok) o.push(eok.toLocaleString()+'억');
+  if(man) o.push(man.toLocaleString()+'만');
+  if(rest) o.push(rest.toLocaleString());
+  return o.join(' ')+'원';
+}
+function hl(s){
+  s = esc(s); const q = esc(st.q.trim());
+  if(!q) return s;
+  return s.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => '<mark>'+m+'</mark>');
+}
+function match(pol, it){
+  if(st.t !== 'all' && it.tag !== st.t) return false;
+  const q = st.q.trim().toLowerCase();
+  return !q || [pol.insurer, pol.product, it.tag, it.rider, it.name, it.desc].join(' ').toLowerCase().includes(q);
+}
+const live = p => p.status !== 'expired';
+const paying = p => p.status !== 'expired' && p.status !== 'paid';
+const okPol = p => (st.p === 'all' || p.owner === st.p) && (st.i === 'all' || p.insurer === st.i);
+const visible = () => D.policies.filter(okPol).map(p => ({pol:p, items:p.items.filter(it => match(p, it))})).filter(x => x.items.length);
+
+function renderChips(){
+  const ins = [...new Set(D.policies.map(p => p.insurer))];
+  if(st.i !== 'all' && !ins.includes(st.i)) st.i = 'all';
+  if(st.p !== 'all' && !D.people.some(p => p.id === st.p)) st.p = 'all';
+  const tab = (l, on, a) => `<button class="owner-tab ${on?'active':''}" ${a}>${esc(l)}</button>`;
+  const rt = (l, on, a) => `<button class="range-tab ${on?'active':''}" ${a}>${esc(l)}</button>`;
+  $('pp').innerHTML = tab('전체', st.p==='all', 'data-p="all"') + D.people.map(p => tab(p.name, st.p===p.id, `data-p="${esc(p.id)}"`)).join('');
+  $('ig').innerHTML = rt('모든 보험사', st.i==='all', 'data-i="all"') + ins.map(n => rt(n, st.i===n, `data-i="${esc(n)}"`)).join('');
+  $('tg').innerHTML = rt('모든 보장', st.t==='all', 'data-t="all"') + TAGS.map(t => rt(t, st.t===t, `data-t="${t}"`)).join('');
+  [...$('vw').children].forEach(b => b.classList.toggle('active', b.dataset.v === st.v));
+}
+function renderStats(){
+  const pols = D.policies.filter(okPol);
+  const act = pols.filter(live), exp = pols.length - act.length;
+  const pay = act.filter(paying), sum = pay.reduce((a,p) => a + (p.premium||0), 0), miss = pay.filter(p => !p.premium).length;
+  const subs = [miss ? '보험료 미입력 '+miss+'건 제외' : '', act.length - pay.length ? '납입 완료 '+(act.length - pay.length)+'건 제외' : ''].filter(Boolean);
+  $('stats').innerHTML =
+    `<div class="metric"><div class="label">유지 중인 계약</div><div class="value num">${act.length}건</div>${exp ? `<div class="sub">만기 ${exp}건 제외</div>` : ''}</div>` +
+    `<div class="metric"><div class="label">보장 항목</div><div class="value num">${act.reduce((a,p) => a + p.items.length, 0)}개</div></div>` +
+    `<div class="metric full"><div class="label">월 보험료 합계</div><div class="value num">${sum.toLocaleString()}원</div>${subs.length ? `<div class="sub">${subs.join(' · ')}</div>` : ''}</div>`;
+}
+const nz = t => String(t||'').replace(/갱신형|[\s·.\-()\[\]]/g,'');
+function dup(i){
+  const r = nz(i.rider), n = nz(i.name);
+  if(!r || r.includes(n) || n.includes(r)) return true;
+  return r.replace(/의료비(A)?$/,'') === n.replace(/(외래|처방조제)$/,'');
+}
+function renew(i){
+  if(!/^갱신형/.test(i.rider) || !i.period) return null;
+  const m = i.period.match(/(\d{4})\.(\d+)\.(\d+)\s*~\s*(\d{4})\.(\d+)\.(\d+)/);
+  return m ? {n: (m[4]-m[1])+'년 갱신', end: `${m[4]}.${m[5]}.${m[6]}`} : {n:'갱신형', end:''};
+}
+function itemHtml(i){
+  const q = st.q.trim();
+  const body = [i.desc ? hl(i.desc) : '', i.premium ? '담보별 보험료 '+i.premium.toLocaleString()+'원' : '', i.period ? '보험기간 '+esc(i.period)+(renew(i) && renew(i).end ? ' · 다음 갱신 '+renew(i).end : '') : ''].filter(Boolean).join('<br>');
+  return `<details class="it" ${q && body ? 'open' : ''}><summary><span class="nm">${hl(i.name)}${(() => { const t = (dup(i) ? '' : hl(i.rider)) + (renew(i) ? `<span class="rn">${renew(i).n}</span>` : ''); return t ? `<small>${t}</small>` : ''; })()}</span><span class="am num">${won(i.amount)}<small>${UNIT[i.unit]||''}</small></span></summary>${body ? `<div class="dsc">${body}</div>` : ''}</details>`;
+}
+function renderIns(){
+  const v = visible().sort((a, b) => live(b.pol) - live(a.pol));
+  const title = `<div class="panel-title"><span>보험 계약</span></div><div class="panel-caption">계약을 누르면 보장 항목이 접히고 펼쳐져요.</div>`;
+  if(!v.length) return title + `<div class="empty">조건에 맞는 보장이 없어요. 검색어를 바꾸거나 필터를 풀어보세요.</div>`;
+  return title + v.map(({pol, items}) => {
+    const o = person(pol.owner), c = col(o), force = !!st.q.trim();
+    const lv = live(pol), pd = !paying(pol), open = force || !flip.has(pol.id);
+    const opts = D.people.map(p => `<option value="${esc(p.id)}" ${p.id===pol.owner?'selected':''}>${esc(p.name)}</option>`).join('');
+    const groups = TAGS.filter(t => items.some(i => i.tag === t));
+    return `<div class="acc ${open?'open':''} ${lv?'':'exp'}">
+      <button class="acc-head" data-pol="${esc(pol.id)}" aria-expanded="${open}">
+        <div><div class="acc-name">${hl(pol.product)}</div><div class="acc-sub"><span class="badge" style="color:${c}">${esc(o.name)}</span>${lv ? (pd ? '<span class="badge" style="color:var(--mint)">납입 완료</span>' : '') : '<span class="badge" style="color:var(--red)">만기</span>'}<span>${hl(pol.insurer)}</span><span>${items.length}/${pol.items.length}개</span></div></div>
+        <div class="acc-right"><div class="acc-prem num">${pd ? (lv ? '납입 완료' : '납입 종료') : (pol.premium ? pol.premium.toLocaleString()+'원' : '미입력')}<small>${pd ? (pol.premium ? '종전 월 '+pol.premium.toLocaleString()+'원' : '') : '월 보험료'}</small></div>${CHEV}</div>
+      </button>
+      <div class="acc-body">
+        <div class="owner-row"><span>가입자</span><select data-own="${esc(pol.id)}" aria-label="가입자">${opts}</select></div>
+        ${pol.period ? `<div class="note">보험기간 ${esc(pol.period)}</div>` : ''}${pol.note ? `<div class="note">${esc(pol.note)}</div>` : ''}
+        ${groups.map(t => `<div class="gt">${t}</div>${items.filter(i => i.tag === t).map(itemHtml).join('')}`).join('')}
+      </div></div>`;
+  }).join('');
+}
+function renderCmp(){
+  const people = D.people.filter(p => st.p === 'all' || p.id === st.p);
+  const best = (p, t) => { let b = null;
+    D.policies.filter(x => live(x) && x.owner === p.id && (st.i === 'all' || x.insurer === st.i)).forEach(pol => pol.items.forEach(i => {
+      if(i.tag === t && i.unit === 'once' && i.amount > 0 && (!b || i.amount > b.amount)) b = i; }));
+    return b; };
+  const rows = TAGS.filter(t => t !== '기타').map(t => {
+    const bs = people.map(p => best(p, t)), mx = Math.max(1, ...bs.map(b => b ? b.amount : 0));
+    return `<div class="bk"><div class="bk-title">${t}</div>${people.map((p, k) => { const b = bs[k];
+      return `<div class="bk-line"><div class="bk-top"><div class="bk-name">${esc(p.name)}<small>${b ? esc(b.name) : '일시금 보장 없음'}</small></div><div class="bk-amt num">${b ? won(b.amount) : '-'}</div></div><div class="track"><div class="fill" style="--w:${b ? b.amount/mx*100 : 0}%;--c:${col(p)}"></div></div></div>`; }).join('')}</div>`;
+  }).join('');
+  return `<div class="panel-title"><span>보장 비교</span></div><div class="panel-caption">분야별로 가장 큰 일시금 보장 기준이에요. 일당·회당·한도형 보장과 만기된 계약은 제외했고, 부부 합산이 아니라 사람별 비교예요.</div>${rows}`;
+}
+function render(){ renderStats(); $('out').innerHTML = st.v === 'cmp' ? renderCmp() : renderIns(); }
+const syncJson = () => { $('js').value = JSON.stringify(D, null, 2); };
+function all(){ renderChips(); render(); syncJson(); }
+
+$('q').addEventListener('input', e => { st.q = e.target.value; render(); });
+document.body.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const d = b.dataset;
+  if(d.p){ st.p = d.p; renderChips(); render(); }
+  else if(d.i){ st.i = d.i; renderChips(); render(); }
+  else if(d.t){ st.t = d.t; renderChips(); render(); }
+  else if(d.v){ st.v = d.v; renderChips(); render(); }
+  else if(d.pol){ flip.has(d.pol) ? flip.delete(d.pol) : flip.add(d.pol); render(); }
+});
+$('out').addEventListener('change', e => {
+  const id = e.target.dataset.own; if(!id) return;
+  D.policies.find(p => p.id === id).owner = e.target.value; save(); all(); toast('가입자를 바꿨어요');
+});
+$('jt').onclick = () => { const o = $('jp').classList.toggle('open'); $('jt').textContent = o ? 'JSON 닫기' : 'JSON 보기'; };
+$('ap').onclick = () => {
+  try{
+    const j = JSON.parse($('js').value);
+    if(!Array.isArray(j.people) || !Array.isArray(j.policies)) throw new Error('people와 policies가 필요해요');
+    j.version = j.version || SEED.version; D = j; save(); all(); toast('JSON 데이터를 적용했어요');
+  }catch(err){ toast('JSON 오류: ' + err.message); }
+};
+$('cp').onclick = async () => {
+  try{ await navigator.clipboard.writeText($('js').value); toast('클립보드에 복사했어요'); }
+  catch(e){ $('js').select(); toast('선택된 내용을 직접 복사해 주세요'); }
+};
+$('rs').onclick = () => { D = JSON.parse(JSON.stringify(SEED)); save(); st = {p:'all', i:'all', q:'', t:'all', v:'ins'}; $('q').value = ''; all(); toast('기본값으로 되돌렸어요'); };
+
+let light = false;
+try{ const t = localStorage.getItem(TKEY); light = t === 'light'; }catch(e){}
+function theme(){ document.body.classList.toggle('light-theme', light); $('th').textContent = light ? '다크 모드' : '라이트 모드'; }
+$('th').onclick = () => { light = !light; theme(); try{ localStorage.setItem(TKEY, light ? 'light' : 'dark'); }catch(e){} };
+theme(); all();
+</script>
+</body>
+</html>
