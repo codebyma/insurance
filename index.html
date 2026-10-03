@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,10 +10,12 @@
 <style>
 :root{--bg:#0f1115;--surface1:#171a20;--surface2:#1e232b;--border:#2a3038;--border-strong:#3a4149;--text1:#edf0f3;--text2:#aab3c0;--text3:#8a94a3;
 --mint:#4ade9a;--mint-dim:#1f3a2c;--gold:#e8b04b;--gold-dim:#3a2f18;--blue:#5b9bd5;--blue-dim:#1c2c3a;--red:#e2635a;--divider-gray:#3a4149;--mark:#6b5a12;
+--ins0:#e57373;--ins1:#7e8ce0;--ins2:#4db6ac;--ins3:#ba68c8;--ins4:#f08a4b;--ins5:#81c784;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
 body.light-theme{--bg:#fff;--surface1:#fff;--surface2:#f7f8fa;--border:#f0f1f3;--border-strong:#e5e7eb;--text1:#191f28;--text2:#444f5d;--text3:#6b7684;
---mint:#178a5c;--mint-dim:#e6f7f0;--gold:#a8720f;--gold-dim:#fbf3e2;--blue:#2f6fb0;--blue-dim:#eaf3fb;--red:#c33a2f;--divider-gray:#f2f2f2;--mark:#fde68a}
+--mint:#178a5c;--mint-dim:#e6f7f0;--gold:#a8720f;--gold-dim:#fbf3e2;--blue:#2f6fb0;--blue-dim:#eaf3fb;--red:#c33a2f;--divider-gray:#f2f2f2;--mark:#fde68a;
+--ins0:#cf4a4a;--ins1:#4a5bc4;--ins2:#1f8a80;--ins3:#9a3fb0;--ins4:#d36a1f;--ins5:#3f8f45}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text1);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI","Noto Sans KR",sans-serif;-webkit-font-smoothing:antialiased;transition:background .15s,color .15s;padding-bottom:60px;overflow-x:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -47,16 +48,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .panel-title{font-size:22px;font-weight:700;margin:22px 0 4px;display:flex;justify-content:space-between;align-items:center}
 .panel-caption{font-size:11.5px;color:var(--text3);margin-bottom:10px}
 .empty{font-size:13px;color:var(--text3);padding:28px 0;text-align:center}
-.acc{border-bottom:1px dashed var(--border)}
-.acc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 0;cursor:pointer;width:100%;background:none;border:0;text-align:left}
-.acc-name{font-size:16px;font-weight:400}
+.acc{margin:0 -20px;padding:0 20px;background:var(--surface1);border-left:4px solid var(--ic,var(--border-strong));border-bottom:12px solid var(--divider-gray)}
+.acc:last-child{border-bottom:0}
+.idot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ic,var(--text3));margin-right:6px;vertical-align:1px}
+.acc-ins{font-size:17px;font-weight:700;color:var(--text1);letter-spacing:-.3px}
+.acc-head{position:sticky;top:calc(58px + env(safe-area-inset-top,0px));z-index:4;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0;cursor:pointer;width:100%;background:var(--surface1);border:0;border-bottom:1px solid var(--border);text-align:left;color:inherit}
+.acc-name{font-size:13px;font-weight:400;color:var(--text2);margin-top:3px}
 .acc-sub{font-size:12px;color:var(--text3);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .acc-right{text-align:right;flex:none;display:flex;gap:6px;align-items:center}
 .acc-prem{font-size:17px}.acc-prem small{display:block;font-size:11px;color:var(--text3);font-family:inherit;letter-spacing:0}
 .chev{transition:transform .15s;color:var(--text3)}
 .acc.open .chev{transform:rotate(180deg)}
 .acc.exp .acc-name,.acc.exp .acc-prem{color:var(--text2)}
-.acc-body{display:none;padding:0 0 20px}
+.acc-body{display:none;padding:12px 0 20px}
 .acc.open .acc-body{display:block}
 .badge{font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid currentColor;font-weight:500}
 .owner-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text2);padding:0 0 6px}
@@ -81,6 +85,7 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .payt{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
 .payl{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-top:8px}
 .payl.first{margin-top:0}
+.payb .note{margin:8px 0 0}
 .payl b{color:var(--text1);font-weight:500}
 .bk-line{margin-bottom:10px}
 .bk-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;align-items:flex-start}
@@ -238,6 +243,9 @@ function hl(s){
   if(!q) return s;
   return s.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => '<mark>'+m+'</mark>');
 }
+function fmtDesc(t){
+  return hl(t).replace(/\n/g, '<br>').replace(/\s*(※|○|▶|①|②|③)/g, '<br>$1').replace(/\.\s+(?=\S)/g, '.<br>').replace(/^(<br>)+/, '');
+}
 function match(pol, it){
   if(st.t !== 'all' && it.tag !== st.t) return false;
   const q = st.q.trim().toLowerCase();
@@ -248,6 +256,7 @@ const paying = p => p.status !== 'expired' && p.status !== 'paid';
 const okPol = p => (st.p === 'all' || p.owner === st.p) && (st.i === 'all' || p.insurer === st.i);
 const visible = () => D.policies.filter(okPol).map(p => ({pol:p, items:p.items.filter(it => match(p, it))})).filter(x => x.items.length || (!x.pol.items.length && !st.q.trim() && st.t === 'all'));
 
+const insColor = n => { const k = [...new Set(D.policies.map(p => p.insurer))].indexOf(n); return `var(--ins${(k < 0 ? 0 : k) % 6})`; };
 function renderChips(){
   const ins = [...new Set(D.policies.map(p => p.insurer))];
   if(st.i !== 'all' && !ins.includes(st.i)) st.i = 'all';
@@ -255,7 +264,7 @@ function renderChips(){
   const tab = (l, on, a) => `<button class="owner-tab ${on?'active':''}" ${a}>${esc(l)}</button>`;
   const rt = (l, on, a) => `<button class="range-tab ${on?'active':''}" ${a}>${esc(l)}</button>`;
   $('pp').innerHTML = tab('전체', st.p==='all', 'data-p="all"') + D.people.map(p => tab(p.name, st.p===p.id, `data-p="${esc(p.id)}"`)).join('');
-  $('ig').innerHTML = rt('모든 보험사', st.i==='all', 'data-i="all"') + ins.map(n => rt(n, st.i===n, `data-i="${esc(n)}"`)).join('');
+  $('ig').innerHTML = rt('모든 보험사', st.i==='all', 'data-i="all"') + ins.map(n => `<button class="range-tab ${st.i===n?'active':''}" data-i="${esc(n)}"><i class="idot" style="--ic:${insColor(n)}"></i>${esc(n)}</button>`).join('');
   $('tg').innerHTML = rt('모든 보장', st.t==='all', 'data-t="all"') + TAGS.map(t => rt(t, st.t===t, `data-t="${t}"`)).join('');
   [...$('vw').children].forEach(b => b.classList.toggle('active', b.dataset.v === st.v));
 }
@@ -266,8 +275,7 @@ function renderStats(){
   const subs = [miss ? '보험료 미입력 '+miss+'건 제외' : '', act.length - pay.length ? '납입 완료 '+(act.length - pay.length)+'건 제외' : ''].filter(Boolean);
   $('stats').innerHTML =
     `<div class="metric"><div class="label">유지 중인 계약</div><div class="value num">${act.length}건</div>${exp ? `<div class="sub">만기 ${exp}건 제외</div>` : ''}</div>` +
-    `<div class="metric"><div class="label">보장 항목</div><div class="value num">${act.reduce((a,p) => a + p.items.length, 0)}개</div></div>` +
-    `<div class="metric full"><div class="label">월 보험료 합계</div><div class="value num">${sum.toLocaleString()}원</div>${subs.length ? `<div class="sub">${subs.join(' · ')}</div>` : ''}</div>`;
+    `<div class="metric"><div class="label">월 보험료 합계</div><div class="value num">${sum.toLocaleString()}원</div>${subs.length ? `<div class="sub">${subs.join(' · ')}</div>` : ''}</div>`;
 }
 const nz = t => String(t||'').replace(/갱신형|[\s·.\-()\[\]]/g,'');
 function dup(i){
@@ -282,13 +290,20 @@ function renew(i){
 }
 function itemHtml(i){
   const q = st.q.trim();
-  const body = [i.desc ? hl(i.desc) : '', i.mult ? '45세 이후 최초 진단 1.5배 적용: 기본 '+won(i.base)+' × '+i.mult+'배 = '+won(i.amount) : '', i.premium ? '담보별 보험료 '+i.premium.toLocaleString()+'원' : '', i.period ? '보험기간 '+esc(i.period)+(renew(i) && renew(i).end ? ' · 다음 갱신 '+renew(i).end : '') : ''].filter(Boolean).join('<br>');
+  const body = [i.desc ? fmtDesc(i.desc) : '', i.mult ? '45세 이후 최초 진단 1.5배 적용: 기본 '+won(i.base)+' × '+i.mult+'배 = '+won(i.amount) : '', i.premium ? '담보별 보험료 '+i.premium.toLocaleString()+'원' : '', i.period ? '보험기간 '+esc(i.period)+(renew(i) && renew(i).end ? ' · 다음 갱신 '+renew(i).end : '') : ''].filter(Boolean).join('<br>');
   return `<details class="it" ${q && body ? 'open' : ''}><summary><span class="nm">${hl(i.name)}${(() => { const t = (dup(i) ? '' : hl(i.rider)) + (renew(i) ? `<span class="rn">${renew(i).n}</span>` : '') + (i.mult ? `<span class="rn">(${i.mult}배 적용)</span>` : ''); return t ? `<small>${t}</small>` : ''; })()}</span><span class="am num">${won(i.amount)}<small>${UNIT[i.unit]||''}</small></span></summary>${body ? `<div class="dsc">${body}</div>` : ''}</details>`;
 }
+function payLeft(pay){
+  const [ey, em] = pay.end.split('.').map(Number), now = new Date();
+  return Math.max(0, (ey*12 + em - 1) - (now.getFullYear()*12 + now.getMonth()) + 1);
+}
+const leftTxt = pay => payLeft(pay) ? payLeft(pay) + '회 남음' : '납입 완료';
 function payBlock(pol){
   const pay = pol.pay; if(!pay) return '';
+  const left = payLeft(pay);
   return `<div class="payb"><div class="payl first"><span>납입기간</span><b>${esc(pay.label)}</b></div>
-    <div class="payl"><span>납입 완료 예정</span><b class="num">${esc(pay.end)}</b></div></div>`;
+    <div class="payl"><span>납입 완료 예정</span><b class="num">${esc(pay.end)} (${leftTxt(pay)})</b></div>
+    ${left ? '<div class="note">남은 횟수는 오늘 날짜 기준이고 이번 달 납입분을 포함해요.</div>' : ''}</div>`;
 }
 function renderIns(){
   const v = visible().sort((a, b) => live(b.pol) - live(a.pol));
@@ -299,9 +314,9 @@ function renderIns(){
     const lv = live(pol), pd = !paying(pol), open = force || !flip.has(pol.id);
     const opts = D.people.map(p => `<option value="${esc(p.id)}" ${p.id===pol.owner?'selected':''}>${esc(p.name)}</option>`).join('');
     const groups = TAGS.filter(t => items.some(i => i.tag === t));
-    return `<div class="acc ${open?'open':''} ${lv?'':'exp'}">
+    return `<div class="acc ${open?'open':''} ${lv?'':'exp'}" style="--ic:${insColor(pol.insurer)}">
       <button class="acc-head" data-pol="${esc(pol.id)}" aria-expanded="${open}">
-        <div><div class="acc-name">${hl(pol.product)}</div><div class="acc-sub"><span class="badge" style="color:${c}">${esc(o.name)}</span>${lv ? (pd ? '<span class="badge" style="color:var(--mint)">납입 완료</span>' : '') : '<span class="badge" style="color:var(--red)">만기</span>'}<span>${hl(pol.insurer)}</span><span>${pol.items.length ? items.length+'/'+pol.items.length+'개' : '보장 내용 추가 예정'}</span>${pol.pay ? `<span>납입 ~${esc(pol.pay.end)}</span>` : ''}</div></div>
+        <div><div class="acc-ins"><i class="idot"></i>${hl(pol.insurer)}</div><div class="acc-name">${hl(pol.product)}</div><div class="acc-sub"><span class="badge" style="color:${c}">${esc(o.name)}</span>${lv ? (pd ? '<span class="badge" style="color:var(--mint)">납입 완료</span>' : '') : '<span class="badge" style="color:var(--red)">만기</span>'}<span>${pol.items.length ? items.length+'/'+pol.items.length+'개' : '보장 내용 추가 예정'}</span>${pol.pay ? `<span>납입 ~${esc(pol.pay.end)} (${leftTxt(pol.pay)})</span>` : ''}</div></div>
         <div class="acc-right"><div class="acc-prem num">${pd ? (lv ? '납입 완료' : '납입 종료') : (pol.premium ? pol.premium.toLocaleString()+'원' : '미입력')}<small>${pd ? (pol.premium ? '종전 월 '+pol.premium.toLocaleString()+'원' : '') : '월 보험료'}</small></div>${CHEV}</div>
       </button>
       <div class="acc-body">
@@ -327,7 +342,7 @@ function subTotals(p, sub){
     const g = {}; let sum = 0;
     pol.items.forEach(i => { if(!(i.subs||[]).includes(sub)) return; if(i.group) g[i.group] = Math.max(g[i.group]||0, i.amount); else sum += i.amount; });
     sum += Object.values(g).reduce((a, b) => a + b, 0);
-    if(sum){ total += sum; parts.push(pol.insurer+' '+won(sum)); }
+    if(sum){ total += sum; parts.push(`<i class="idot" style="--ic:${insColor(pol.insurer)}"></i>${esc(pol.insurer)} ${won(sum)}`); }
   });
   return {total, parts};
 }
@@ -341,7 +356,7 @@ function tagHtml(t, people){
   return `<div class="bk"><div class="bk-title">${t}</div>${rows.map(({k, r}) => {
     const mx = Math.max(1, ...r.map(y => y.total)), u = subUnit(k);
     return `<div class="bk-sub">${esc(k)}</div>` + people.map((p, n) => { const y = r[n];
-      return `<div class="bk-line"><div class="bk-top"><div class="bk-name">${esc(p.name)}<small>${y.total ? esc(y.parts.join(' · ')) : '보장 없음'}</small></div><div class="bk-amt num">${y.total ? won(y.total) + (u ? `<small class="bk-u">${u}</small>` : '') : '-'}</div></div><div class="track"><div class="fill" style="--w:${y.total/mx*100}%;--c:${col(p)}"></div></div></div>`; }).join('');
+      return `<div class="bk-line"><div class="bk-top"><div class="bk-name">${esc(p.name)}<small>${y.total ? y.parts.join(' · ') : '보장 없음'}</small></div><div class="bk-amt num">${y.total ? won(y.total) + (u ? `<small class="bk-u">${u}</small>` : '') : '-'}</div></div><div class="track"><div class="fill" style="--w:${y.total/mx*100}%;--c:${col(p)}"></div></div></div>`; }).join('');
   }).join('')}</div>`;
 }
 function renderCmp(){
