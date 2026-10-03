@@ -75,6 +75,13 @@ details.it summary::-webkit-details-marker{display:none}
 .am{text-align:right;font-size:15px;font-weight:500;flex:none}.am small{font-size:11.5px;color:var(--text3);font-weight:400;font-family:inherit}
 .rn{color:var(--gold);font-weight:500;margin-left:6px}
 .nm small .rn:first-child{margin-left:0}
+.dsc-det+.dsc-meta{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border-strong)}
+.mr{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--text2)}
+.mr+.mr{margin-top:6px}
+.mr b{font-weight:500;color:var(--text1);text-align:right}
+.dsc .dl{display:flex;gap:8px;align-items:flex-start}
+.dsc .dl+.dl{margin-top:3px}
+.bd{flex:none;width:4px;height:4px;border-radius:50%;background:var(--text3);margin-top:8px}
 .dsc{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:12.5px;color:var(--text2);line-height:1.6}
 mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
 .bk{padding:14px 0;border-bottom:1px dashed var(--border)}
@@ -129,10 +136,10 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
 <div class="toast" id="toast" role="status"></div>
 
 <script type="application/json" id="seed">{
- "version":18,
+ "version":19,
  "people":[{"id":"me","name":"나","color":"blue"},{"id":"wife","name":"와이프","color":"gold"}],
  "policies":[
-  {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"2010.12.21 ~ 2082.12.21 (담보별 상이, 갱신형은 ~2028.12.21)","note":"월 4만원. 실손(입원·통원 의료비) 포함. 갱신형 담보는 3년 갱신이고 다음 갱신일은 2028.12.21이에요. 갱신 시 보험료가 달라질 수 있어요","pay":{"label":"20년납 / 100세 만기","end":"2030.11"},
+  {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"2010.12.21 ~ 2082.12.21 (담보별 상이)","note":"월 4만원. 실손(입원·통원 의료비) 포함. 갱신형 담보는 3년마다 갱신돼요. 갱신 후에는 보험료가 달라질 수 있어요","pay":{"label":"20년납 / 100세 만기","end":"2030.11"},"renewal":{"from":"2025.12.21","years":3,"until":"2082.12.21"},
    "items":[
     {"tag":"사망/장해","rider":"일반상해사망후유장해","name":"일반상해 사망·후유장해","amount":50000000,"unit":"once","desc":"사고로 사망 또는 후유장해 발생 시 지급","premium":7250,"period":"2010.12.21 ~ 2082.12.21","subs":["상해 사망","상해 후유장해"]},
     {"tag":"사망/장해","rider":"교통상해사망.후유장해","name":"교통상해 사망·후유장해","amount":50000000,"unit":"once","desc":"교통사고로 사망 또는 후유장해 발생 시 지급","premium":4950,"period":"2010.12.21 ~ 2062.12.21","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"]},
@@ -243,8 +250,8 @@ function hl(s){
   if(!q) return s;
   return s.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => '<mark>'+m+'</mark>');
 }
-function fmtDesc(t){
-  return hl(t).replace(/\n/g, '<br>').replace(/\s*(※|○|▶|①|②|③)/g, '<br>$1').replace(/\.\s+(?=\S)/g, '.<br>').replace(/^(<br>)+/, '');
+function fmtLines(t){
+  return hl(t).replace(/\n/g, '<br>').replace(/\s*[○▶]\s*/g, '<br>').replace(/\s*(※|①|②|③)/g, '<br>$1').replace(/\.\s+(?=\S)/g, '.<br>').replace(/^(<br>)+/, '').split('<br>').filter(l => l.trim());
 }
 function match(pol, it){
   if(st.t !== 'all' && it.tag !== st.t) return false;
@@ -283,14 +290,33 @@ function dup(i){
   if(!r || r.includes(n) || n.includes(r)) return true;
   return r.replace(/의료비(A)?$/,'') === n.replace(/(외래|처방조제)$/,'');
 }
+const pad2 = n => String(n).padStart(2, '0');
+const fmtD = dt => `${dt.getFullYear()}.${pad2(dt.getMonth()+1)}.${pad2(dt.getDate())}`;
+function curTerm(rn){
+  const [y, m, d] = rn.from.split('.').map(Number), t = new Date(); t.setHours(0, 0, 0, 0);
+  const at = k => new Date(y + k*rn.years, m - 1, d);
+  let k = 0; while(at(k + 1) <= t && k < 200) k++;
+  const st0 = at(k); let en = at(k + 1), last = false;
+  if(rn.until){ const [uy, um, ud] = rn.until.split('.').map(Number), u = new Date(uy, um - 1, ud); if(en >= u){ en = u; last = true; } }
+  return {start: fmtD(st0), end: fmtD(en), last};
+}
+function applyRenewals(){
+  D.policies.forEach(p => { if(!p.renewal) return; const t = curTerm(p.renewal);
+    p.items.forEach(i => { if(/^갱신형/.test(i.rider)){ i.period = t.start + ' ~ ' + t.end; i.lastTerm = t.last; } }); });
+}
 function renew(i){
   if(!/^갱신형/.test(i.rider) || !i.period) return null;
   const m = i.period.match(/(\d{4})\.(\d+)\.(\d+)\s*~\s*(\d{4})\.(\d+)\.(\d+)/);
-  return m ? {n: (m[4]-m[1])+'년 갱신', end: `${m[4]}.${m[5]}.${m[6]}`} : {n:'갱신형', end:''};
+  return m ? {n: (m[4]-m[1])+'년 갱신', end: i.lastTerm ? '' : `${m[4]}.${m[5]}.${m[6]}`} : {n:'갱신형', end:''};
 }
 function itemHtml(i){
   const q = st.q.trim();
-  const body = [i.desc ? fmtDesc(i.desc) : '', i.mult ? '45세 이후 최초 진단 1.5배 적용: 기본 '+won(i.base)+' × '+i.mult+'배 = '+won(i.amount) : '', i.premium ? '담보별 보험료 '+i.premium.toLocaleString()+'원' : '', i.period ? '보험기간 '+esc(i.period)+(renew(i) && renew(i).end ? ' · 다음 갱신 '+renew(i).end : '') : ''].filter(Boolean).join('<br>');
+  const dot = l => `<div class="dl"><i class="bd"></i><span>${l}</span></div>`;
+  const det = [...(i.desc ? fmtLines(i.desc) : []), i.mult ? '45세 이후 최초 진단 1.5배 적용: 기본 '+won(i.base)+' × '+i.mult+'배 = '+won(i.amount) : ''].filter(Boolean);
+  const rn = renew(i), meta = [];
+  if(i.premium) meta.push(['담보별 보험료', i.premium.toLocaleString()+'원']);
+  if(i.period) meta.push(['보험기간', esc(i.period) + (rn && rn.end ? ' · 다음 갱신 '+rn.end : '')]);
+  const body = (det.length ? `<div class="dsc-det">${det.map(dot).join('')}</div>` : '') + (meta.length ? `<div class="dsc-meta">${meta.map(([k, v]) => `<div class="mr"><span>${k}</span><b>${v}</b></div>`).join('')}</div>` : '');
   return `<details class="it" ${q && body ? 'open' : ''}><summary><span class="nm">${hl(i.name)}${(() => { const t = (dup(i) ? '' : hl(i.rider)) + (renew(i) ? `<span class="rn">${renew(i).n}</span>` : '') + (i.mult ? `<span class="rn">(${i.mult}배 적용)</span>` : ''); return t ? `<small>${t}</small>` : ''; })()}</span><span class="am num">${won(i.amount)}<small>${UNIT[i.unit]||''}</small></span></summary>${body ? `<div class="dsc">${body}</div>` : ''}</details>`;
 }
 function payLeft(pay){
@@ -322,6 +348,7 @@ function renderIns(){
       <div class="acc-body">
         <div class="owner-row"><span>가입자</span><select data-own="${esc(pol.id)}" aria-label="가입자">${opts}</select></div>
         ${payBlock(pol)}
+        ${pol.renewal ? (() => { const t = curTerm(pol.renewal); return `<div class="note">갱신형 담보 현재 구간 ${t.start} ~ ${t.end}${t.last ? '' : ' · 다음 갱신 '+t.end}</div>`; })() : ''}
         ${pol.period ? `<div class="note">보험기간 ${esc(pol.period)}</div>` : ''}${pol.note ? `<div class="note">${esc(pol.note)}</div>` : ''}
         ${groups.map(t => `<div class="gt">${t}</div>${items.filter(i => i.tag === t).map(itemHtml).join('')}`).join('')}
       </div></div>`;
@@ -366,7 +393,7 @@ function renderCmp(){
 }
 function render(){ renderStats(); $('out').innerHTML = st.v === 'cmp' ? renderCmp() : renderIns(); }
 const syncJson = () => { $('js').value = JSON.stringify(D, null, 2); };
-function all(){ renderChips(); render(); syncJson(); }
+function all(){ applyRenewals(); renderChips(); render(); syncJson(); }
 
 $('q').addEventListener('input', e => { st.q = e.target.value; render(); });
 document.body.addEventListener('click', e => {
