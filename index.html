@@ -64,12 +64,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .acc-body{display:none;padding:12px 0 20px}
 .acc.open .acc-body{display:block}
 .badge{font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid currentColor;font-weight:500}
-.owner-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text2);padding:0 0 6px}
-.owner-row select{background:var(--surface2);border:1px solid var(--border-strong);border-radius:7px;height:32px;padding:0 8px;font-size:13px}
 .note{font-size:11.5px;color:var(--text3);margin:2px 0 6px}
 .gt{font-size:13px;font-weight:600;color:var(--mint);margin:16px 0 2px}
 details.it{border-bottom:1px solid var(--border)}
 details.it:last-child{border-bottom:0}
+details.it.star{background:color-mix(in srgb, var(--gold-dim) 40%, transparent);border-radius:10px;margin:2px -10px;padding:0 10px;border-bottom-color:transparent}
+details.it.star .nm{font-weight:600}
+details.it.star .am{color:var(--gold)}
 details.it summary{list-style:none;display:flex;justify-content:space-between;gap:12px;padding:12px 0;cursor:pointer}
 details.it summary::-webkit-details-marker{display:none}
 .nm{flex:1;min-width:0;font-size:15px}.nm small{display:block;font-size:11.5px;color:var(--text3);margin-top:3px}
@@ -99,7 +100,7 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
 .tl+.tl{margin-top:6px}
 .tl b{font-weight:500;color:var(--text1);white-space:nowrap}
 .bk-u{font-size:11.5px;color:var(--text3);font-weight:400;margin-left:2px}
-.terms-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:40px;margin:6px 0 12px;border:1px solid var(--border-strong);border-radius:10px;background:none;color:var(--text1);font-size:14px;font-weight:500;text-decoration:none;cursor:pointer}
+.terms-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:40px;margin:0 0 12px;border:1px solid var(--border-strong);border-radius:10px;background:none;color:var(--text1);font-size:14px;font-weight:500;text-decoration:none;cursor:pointer}
 .terms-btn:active{transform:scale(.99)}
 .terms-btn:disabled{color:var(--text3);border-style:dashed;cursor:not-allowed}
 .payb{background:var(--surface2);border-radius:10px;padding:12px;margin:0 0 12px}
@@ -114,18 +115,6 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
 .bk-amt{font-size:14px;font-weight:600}
 .track{height:6px;background:var(--surface2);border-radius:3px}
 .fill{height:100%;width:var(--w,0%);border-radius:3px;background:var(--c,var(--mint))}
-.header-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
-.add-btn{background:none;border:1px solid var(--border-strong);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
-.add-btn:active{transform:scale(.97)}
-.json-panel{display:block;margin-top:6px}
-.json-panel.open{display:block}
-textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:1px solid var(--border-strong);border-radius:8px;font:12px/1.5 ui-monospace,Menlo,monospace;padding:10px}
-.btn-primary,.btn-ghost{height:40px;padding:0 14px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}
-.btn-primary{background:var(--mint);border:0;color:var(--bg)}
-.btn-ghost{background:none;border:1px solid var(--border-strong)}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--surface2);border:1px solid var(--border-strong);padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:50;max-width:90%}
-.toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -137,19 +126,9 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
 <div class="scroll-row" id="ig"></div>
 <div class="scroll-row" id="tg"></div>
 <div class="panel-wrap" id="out"></div>
-<div class="divider" style="margin-top:28px"></div>
-<div class="panel-wrap">
-  <div class="panel-title">JSON 편집</div>
-  <div class="json-panel open" id="jp">
-    <div class="panel-caption">보험사, 보험료, 보장 항목을 고친 뒤 적용하면 이 브라우저에 저장돼요. 약관 파일을 서버에 올린 뒤 각 계약의 termsUrl에 주소(https://… 또는 /경로)를 넣으면 '약관 보기' 버튼이 활성화돼요. 백업하려면 복사해서 메모해 두세요.</div>
-    <textarea id="js" spellcheck="false" aria-label="JSON 데이터"></textarea>
-    <div class="actions"><button class="btn-primary" id="ap">적용하고 저장</button><button class="btn-ghost" id="cp">복사</button><button class="btn-ghost" id="rs">기본값 복원</button></div>
-  </div>
-</div>
-<div class="toast" id="toast" role="status"></div>
 
 <script type="application/json" id="seed">{
- "version":21,
+ "version":23,
  "people":[{"id":"me","name":"나","color":"blue"},{"id":"wife","name":"와이프","color":"gold"}],
  "policies":[
   {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"2010.12.21 ~ 2082.12.21 (담보별 상이)","note":"월 4만원. 실손(입원·통원 의료비) 포함. 갱신형 담보는 3년마다 갱신돼요. 갱신 후에는 보험료가 달라질 수 있어요","pay":{"label":"20년납 / 100세 만기","end":"2030.11"},"renewal":{"from":"2025.12.21","years":3,"until":"2082.12.21"},"termsUrl":"",
@@ -158,11 +137,11 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
     {"tag":"사망/장해","rider":"교통상해사망.후유장해","name":"교통상해 사망·후유장해","amount":50000000,"unit":"once","desc":"교통사고로 사망 또는 후유장해 발생 시 지급","premium":4950,"period":"2010.12.21 ~ 2062.12.21","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"]},
     {"tag":"사망/장해","rider":"대중교통이용중교통상해사망후유장해","name":"대중교통 이용 중 교통상해 사망·후유장해","amount":300000000,"unit":"once","desc":"대중교통 이용 중 교통사고로 사망 또는 후유장해 발생 시 지급","premium":990,"period":"2010.12.21 ~ 2062.12.21","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"]},
     {"tag":"사망/장해","rider":"질병사망","name":"질병 사망","amount":20000000,"unit":"once","desc":"질병으로 사망하거나 80% 이상 후유장해 발생 시 지급","premium":4260,"period":"2010.12.21 ~ 2042.12.21","subs":["질병 사망","질병 후유장해"]},
-    {"tag":"암","rider":"갱신형 암진단비","name":"암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"보장개시일 이후 암으로 진단 확정 시 최초 1회한 지급 (1년 미만 50% 지급). 상피내암·기타피부암·경계성종양·갑상샘암은 각각 최초 1회한 20% 지급 (1년 미만 10%).","premium":3440,"period":"2025.12.21 ~ 2028.12.21","subs":["암 진단비 (일반암)"]},
-    {"tag":"암","rider":"갱신형 고액암진단비","name":"고액암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"고액암 보장개시일 이후 고액암으로 진단 시 최초 1회한 지급 (1년 미만 50% 지급)","premium":560,"period":"2025.12.21 ~ 2028.12.21","subs":["고액암 진단비"]},
-    {"tag":"뇌","rider":"갱신형 뇌졸중진단비","name":"뇌졸중 진단비 (갱신형)","amount":10000000,"unit":"once","desc":"뇌졸중으로 진단 확정 시 최초 1회한 지급","premium":1000,"period":"2025.12.21 ~ 2028.12.21","subs":["뇌졸중 진단비"]},
-    {"tag":"심장","rider":"갱신형 급성심근경색증진단","name":"급성심근경색증 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"급성심근경색증으로 진단 확정 시 최초 1회한 지급","premium":1100,"period":"2025.12.21 ~ 2028.12.21","subs":["급성심근경색증 진단비"]},
-    {"tag":"뇌","rider":"양성뇌종양진단비","name":"양성뇌종양 진단비","amount":3000000,"unit":"once","desc":"양성뇌종양으로 진단 확정 시 최초 1회한 지급","premium":51,"period":"2010.12.21 ~ 2062.12.21","subs":["양성뇌종양 진단비"]},
+    {"tag":"암","rider":"갱신형 암진단비","name":"암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"보장개시일 이후 암으로 진단 확정 시 최초 1회한 지급 (1년 미만 50% 지급). 상피내암·기타피부암·경계성종양·갑상샘암은 각각 최초 1회한 20% 지급 (1년 미만 10%).","premium":3440,"period":"2025.12.21 ~ 2028.12.21","subs":["암 진단비 (일반암)"],"star":true},
+    {"tag":"암","rider":"갱신형 고액암진단비","name":"고액암 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"고액암 보장개시일 이후 고액암으로 진단 시 최초 1회한 지급 (1년 미만 50% 지급)","premium":560,"period":"2025.12.21 ~ 2028.12.21","subs":["고액암 진단비"],"star":true},
+    {"tag":"뇌","rider":"갱신형 뇌졸중진단비","name":"뇌졸중 진단비 (갱신형)","amount":10000000,"unit":"once","desc":"뇌졸중으로 진단 확정 시 최초 1회한 지급","premium":1000,"period":"2025.12.21 ~ 2028.12.21","subs":["뇌졸중 진단비"],"star":true},
+    {"tag":"심장","rider":"갱신형 급성심근경색증진단","name":"급성심근경색증 진단비 (갱신형)","amount":20000000,"unit":"once","desc":"급성심근경색증으로 진단 확정 시 최초 1회한 지급","premium":1100,"period":"2025.12.21 ~ 2028.12.21","subs":["급성심근경색증 진단비"],"star":true},
+    {"tag":"뇌","rider":"양성뇌종양진단비","name":"양성뇌종양 진단비","amount":3000000,"unit":"once","desc":"양성뇌종양으로 진단 확정 시 최초 1회한 지급","premium":51,"period":"2010.12.21 ~ 2062.12.21","subs":["양성뇌종양 진단비"],"star":true},
     {"tag":"수술","rider":"충수염수술비","name":"충수염 수술비","amount":500000,"unit":"once","desc":"충수(맹장)염으로 진단 확정되고 수술 시 최초 1회한 지급","premium":92,"period":"2010.12.21 ~ 2062.12.21","subs":["충수염 수술비"]},
     {"tag":"수술","rider":"조혈모세포이식수술비","name":"조혈모세포이식 수술비","amount":20000000,"unit":"once","desc":"조혈모세포이식 수술 시 최초 1회한 지급","premium":100,"period":"2010.12.21 ~ 2062.12.21","subs":["조혈모세포이식 수술비"]},
     {"tag":"수술","rider":"컴퓨터질환(VDT증후군)수술비","name":"컴퓨터질환(VDT증후군) 수술비","amount":1000000,"unit":"once","desc":"컴퓨터질환(VDT증후군)으로 진단 확정되고 수술 시 지급","premium":15,"period":"2010.12.21 ~ 2062.12.21","subs":["컴퓨터질환(VDT증후군) 수술비"]},
@@ -189,17 +168,17 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
     {"tag":"사망/장해","rider":"일반상해사망","name":"일반상해사망","amount":1000000,"unit":"once","desc":"보험기간 중 상해의 직접결과로 사망한 경우(질병으로 인한 사망 제외) 금액 지급","premium":50,"period":"2021.11.05 ~ 2062.11.05","subs":["상해 사망"]},
     {"tag":"사망/장해","rider":"일반상해사망(추가)","name":"일반상해사망(추가)","amount":99000000,"unit":"once","desc":"보험기간 중 상해의 직접결과로 사망한 경우(질병으로 인한 사망 제외) 금액 지급. 일반상해사망 100만원과 합치면 상해사망 총 1억원이에요.","premium":2871,"period":"2021.11.05 ~ 2041.11.05","subs":["상해 사망"]},
     {"tag":"사망/장해","rider":"질병후유장해(3~100%)(감액없음)","name":"질병후유장해(3~100%)(감액없음)","amount":20000000,"unit":"once","desc":"보험기간 중 진단확정된 질병으로 장해분류표에서 정한 장해지급률이 3~100%에 해당하는 후유장해 상태가 된 경우 보험가입금액에 장해지급률을 곱하여 산출한 금액 지급","premium":8980,"period":"2021.11.05 ~ 2062.11.05","subs":["질병 후유장해"]},
-    {"tag":"뇌","rider":"뇌혈관질환진단비","name":"뇌혈관질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 뇌혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":17420,"period":"2021.11.05 ~ 2062.11.05","subs":["뇌혈관질환 진단비"]},
-    {"tag":"심장","rider":"허혈성심질환진단비","name":"허혈성심질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 허혈성심질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":9600,"period":"2021.11.05 ~ 2062.11.05","subs":["허혈성심질환 진단비"]},
-    {"tag":"심장","rider":"특정심혈관질환진단비","name":"특정심혈관질환진단비","amount":10000000,"unit":"once","desc":"보험기간 중 특정심혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급 ※ 특정심혈관질환: 협심증, 기타 급성 허혈심장질환, 만성 허혈심장병, 발작성 빈맥, 심방세동 및 조동, 기타심장부정맥, 심부전","premium":8040,"period":"2021.11.05 ~ 2062.11.05","subs":["특정심혈관질환 진단비"]},
+    {"tag":"뇌","rider":"뇌혈관질환진단비","name":"뇌혈관질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 뇌혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":17420,"period":"2021.11.05 ~ 2062.11.05","subs":["뇌혈관질환 진단비"],"star":true},
+    {"tag":"심장","rider":"허혈성심질환진단비","name":"허혈성심질환진단비","amount":20000000,"unit":"once","desc":"보험기간 중 허혈성심질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":9600,"period":"2021.11.05 ~ 2062.11.05","subs":["허혈성심질환 진단비"],"star":true},
+    {"tag":"심장","rider":"특정심혈관질환진단비","name":"특정심혈관질환진단비","amount":10000000,"unit":"once","desc":"보험기간 중 특정심혈관질환으로 진단확정 시 금액 지급 ※ 최초 1회, 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급 ※ 특정심혈관질환: 협심증, 기타 급성 허혈심장질환, 만성 허혈심장병, 발작성 빈맥, 심방세동 및 조동, 기타심장부정맥, 심부전","premium":8040,"period":"2021.11.05 ~ 2062.11.05","subs":["특정심혈관질환 진단비"],"star":true},
     {"tag":"수술","rider":"허혈성심질환수술비","name":"허혈성심질환수술비","amount":5000000,"unit":"once","desc":"보험기간 중 허혈성심질환으로 진단확정되고 그 치료를 직접적인 목적으로 수술을 받은 때에는 수술 1회당 금액 지급 ※ 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","premium":2300,"period":"2021.11.05 ~ 2062.11.05","subs":["허혈성심질환 수술비"]},
     {"tag":"수술","rider":"뇌혈관질환수술비","name":"뇌혈관질환수술비","amount":5000000,"unit":"once","premium":750,"period":"2021.11.05 ~ 2062.11.05","desc":"보험기간 중 뇌혈관질환으로 진단확정되고 그 치료를 직접적인 목적으로 수술을 받은 때에는 수술 1회당 금액 지급 ※ 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","subs":["뇌혈관질환 수술비"]},
     {"tag":"기타","rider":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","name":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","amount":100000,"unit":"once","desc":"보험기간 중 ① 암보장개시일 이후 암(유사암 제외)으로 진단받은 경우 ② 뇌졸중, 급성심근경색증, 말기만성폐질환, 말기간경화, 말기신부전증으로 진단받은 경우 ③ 상해 또는 진단확정된 질병으로 장해분류표에서 정한 장해지급률이 80% 이상에 해당하는 후유장해 상태가 된 경우, 이 중 한 가지 사유가 발생한 때에는 보험가입금액을 보험수익자에게 지급 ※ 최초 1회 ※ [암보장개시일] 보험계약일로부터 그날을 포함하여 90일이 지난 날의 다음날","premium":66,"period":"2021.11.05 ~ 2041.11.05"}
    ]},
   {"id":"p4","owner":"me","insurer":"예별손해","product":"무배당 건강명의 4대질병진단보험(1805)(1종)(해지환급금미지급형)(2183P)","premium":34800,"period":"2018.05.29 ~ 2062.05.29","note":"월 34,800원. 캡처에 보인 담보만 입력했어요. 담보별 보험료와 4대질병 중 다른 담보는 추가 가능해요","pay":{"label":"20년납","end":"2038.04"},"termsUrl":"",
    "items":[
-    {"tag":"암","rider":"암진단비(소액암제외)","name":"암진단비(소액암제외)","amount":35000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["암 진단비 (일반암)"]},
-    {"tag":"암","rider":"소액암진단비","name":"소액암진단비","amount":10000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["소액암·유사암 진단비"]}
+    {"tag":"암","rider":"암진단비(소액암제외)","name":"암진단비(소액암제외)","amount":35000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["암 진단비 (일반암)"],"star":true},
+    {"tag":"암","rider":"소액암진단비","name":"소액암진단비","amount":10000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["소액암·유사암 진단비"],"star":true}
    ]},
   {"id":"p5","owner":"me","insurer":"교보","product":"(무)라이프플래닛e정기보험 II (순수보장형,비흡연체)","premium":14520,"period":"","note":"","pay":{"label":"80세납 (2062.10까지)","end":"2062.10"},"termsUrl":"",
    "items":[
@@ -211,24 +190,30 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
     {"tag":"사망/장해","rider":"재해사망특약","name":"차량탑승 중 교통재해 사망 · 장해 1급","amount":50000000,"unit":"once","desc":"","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"],"group":"재해사망-교통"},
     {"tag":"사망/장해","rider":"재해사망특약","name":"차량탑승 외 교통재해 사망 · 장해 1급","amount":37500000,"unit":"once","desc":"","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"],"group":"재해사망-교통"},
     {"tag":"사망/장해","rider":"재해사망특약","name":"교통재해 외 재해 사망 · 장해 1급","amount":25000000,"unit":"once","desc":"","subs":["상해 사망","상해 후유장해"]},
-    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 2급 (10년간 매년)","amount":25000000,"unit":"once","desc":"교통재해로 2급·3급 장해 시 지급사유 발생일 포함 10년간 매년 지급. 3급은 12,500,000원. 교통재해 외 재해는 1/2 지급."},
-    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 3급 (10년간 매년)","amount":12500000,"unit":"once","desc":"교통재해 외 재해는 1/2 지급."},
-    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 4급","amount":50000000,"unit":"once","desc":"4급·5급·6급 장해 시. 5급 25,000,000원 / 6급 12,500,000원. 교통재해 외 재해는 1/2 지급."},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 2급 (10년간 매년)","amount":25000000,"unit":"once","desc":"교통재해로 제2급 장해 시 지급사유 발생일을 포함하여 10년간 매년 지급사유 발생해당일에 지급. 교통재해 외 재해는 1/2 지급"},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 3급 (10년간 매년)","amount":12500000,"unit":"once","desc":"교통재해로 제3급 장해 시 지급사유 발생일을 포함하여 10년간 매년 지급사유 발생해당일에 지급. 교통재해 외 재해는 1/2 지급"},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 4급","amount":50000000,"unit":"once","desc":"교통재해로 제4급 장해 시 지급. 교통재해 외 재해는 1/2 지급"},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 5급","amount":25000000,"unit":"once","desc":"교통재해로 제5급 장해 시 지급. 교통재해 외 재해는 1/2 지급"},
+    {"tag":"사망/장해","rider":"재해장해보장특약","name":"교통재해 장해 6급","amount":12500000,"unit":"once","desc":"교통재해로 제6급 장해 시 지급. 교통재해 외 재해는 1/2 지급"},
     {"tag":"상해/재해","rider":"재해의료보장특약","name":"교통재해 4일 이상 입원","amount":200000,"unit":"visit","desc":"교통재해로 치료 목적 4일 이상 계속 입원 (1회당). 교통재해 외 재해는 1/2 지급.","subs":["교통재해 입원 (4일 이상)"]},
     {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해골절 진단","amount":300000,"unit":"visit","desc":"재해를 직접 원인으로 재해골절 진단 확정 시 (1회당).","subs":["골절 진단비"]},
-    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해 31일 이상 계속 입원","amount":500000,"unit":"once","desc":"재해 치료 목적 입원. 121일 이상 1,000,000원 / 181일 이상 2,000,000원.","subs":["재해 장기 입원 (31일 이상)"]},
-    {"tag":"암","rider":"암보장특약","name":"암 진단비","amount":22500000,"unit":"once","desc":"책임개시일 이후 최초 암 진단 확정 (1회한). 계약해당일 기준 피보험자 45세 이후 최초 진단 시 1.5배 지급.","subs":["암 진단비 (일반암)"],"base":15000000,"mult":1.5},
-    {"tag":"암","rider":"암보장특약","name":"상피내암 진단비","amount":4500000,"unit":"once","desc":"최초 상피내암 진단 (1회한). 45세 이후 1.5배.","subs":["소액암·유사암 진단비"],"base":3000000,"mult":1.5},
-    {"tag":"암","rider":"암보장특약","name":"경계성종양 진단비","amount":4500000,"unit":"once","desc":"최초 경계성종양 진단 (1회한). 45세 이후 1.5배.","subs":["소액암·유사암 진단비"],"base":3000000,"mult":1.5},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해 31일 이상 계속 입원","amount":500000,"unit":"once","desc":"재해 치료 목적으로 31일 이상 계속 입원한 경우 지급","subs":["재해 입원 31일 이상"]},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해 121일 이상 계속 입원","amount":1000000,"unit":"once","desc":"재해 치료 목적으로 121일 이상 계속 입원한 경우 지급","subs":["재해 입원 121일 이상"]},
+    {"tag":"상해/재해","rider":"재해의료보장특약","name":"재해 181일 이상 계속 입원","amount":2000000,"unit":"once","desc":"재해 치료 목적으로 181일 이상 계속 입원한 경우 지급","subs":["재해 입원 181일 이상"]},
+    {"tag":"암","rider":"암보장특약","name":"암 진단비","amount":22500000,"unit":"once","desc":"책임개시일 이후 최초 암 진단 확정 (1회한). 계약해당일 기준 피보험자 45세 이후 최초 진단 시 1.5배 지급.","subs":["암 진단비 (일반암)"],"base":15000000,"mult":1.5,"star":true},
+    {"tag":"암","rider":"암보장특약","name":"상피내암 진단비","amount":4500000,"unit":"once","desc":"최초 상피내암 진단 (1회한). 45세 이후 1.5배.","subs":["소액암·유사암 진단비"],"base":3000000,"mult":1.5,"star":true},
+    {"tag":"암","rider":"암보장특약","name":"경계성종양 진단비","amount":4500000,"unit":"once","desc":"최초 경계성종양 진단 (1회한). 45세 이후 1.5배.","subs":["소액암·유사암 진단비"],"base":3000000,"mult":1.5,"star":true},
     {"tag":"암","rider":"암보장특약","name":"암 수술비","amount":3000000,"unit":"visit","desc":"암 치료 직접 목적 수술 (1회당).","subs":["암 수술비"]},
     {"tag":"암","rider":"암보장특약","name":"상피내암·경계성종양 수술비","amount":600000,"unit":"visit","desc":"치료 직접 목적 수술 (1회당).","subs":["상피내암·경계성종양 수술비"]},
     {"tag":"암","rider":"암보장특약","name":"암 입원비","amount":75000,"unit":"day","desc":"암 치료 직접 목적 4일 이상 입원 (3일 초과 1일당, 120일 한도).","subs":["암 입원비"]},
     {"tag":"암","rider":"암보장특약","name":"상피내암·경계성종양 입원비","amount":15000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도).","subs":["상피내암·경계성종양 입원비"]},
-    {"tag":"뇌","rider":"성인병보장특약","name":"뇌졸중 진단비","amount":22500000,"unit":"once","desc":"최초 진단 확정 시 각 1회한. 45세 이후 최초 진단 시 1.5배.","subs":["뇌졸중 진단비"],"base":15000000,"mult":1.5},
-    {"tag":"심장","rider":"성인병보장특약","name":"급성심근경색증 진단비","amount":22500000,"unit":"once","desc":"최초 진단 확정 시 각 1회한. 45세 이후 최초 진단 시 1.5배.","subs":["급성심근경색증 진단비"],"base":15000000,"mult":1.5},
+    {"tag":"뇌","rider":"성인병보장특약","name":"뇌졸중 진단비","amount":22500000,"unit":"once","desc":"최초 진단 확정 시 각 1회한. 45세 이후 최초 진단 시 1.5배.","subs":["뇌졸중 진단비"],"base":15000000,"mult":1.5,"star":true},
+    {"tag":"심장","rider":"성인병보장특약","name":"급성심근경색증 진단비","amount":22500000,"unit":"once","desc":"최초 진단 확정 시 각 1회한. 45세 이후 최초 진단 시 1.5배.","subs":["급성심근경색증 진단비"],"base":15000000,"mult":1.5,"star":true},
     {"tag":"수술","rider":"성인병보장특약","name":"성인 8대 특정질환 수술비","amount":3000000,"unit":"visit","desc":"입원 동반 수술 (1회당). 세부 내용은 약관 참조.","subs":["성인 8대 특정질환 수술비"]},
     {"tag":"입원/통원","rider":"성인병보장특약","name":"성인 8대 특정질환 입원비","amount":45000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도).","subs":["성인 8대 특정질환 입원비"]},
-    {"tag":"수술","rider":"수술보장특약","name":"질병·재해 수술 3종","amount":1500000,"unit":"visit","desc":"1종 300,000원 / 2종 750,000원 / 3종 1,500,000원.","subs":["질병·재해 수술비 (3종 기준)"]},
+    {"tag":"수술","rider":"수술보장특약","name":"질병·재해 수술 1종","amount":300000,"unit":"visit","desc":"질병 또는 재해로 치료 목적 수술을 받은 경우 지급","subs":["질병·재해 수술 1종"]},
+    {"tag":"수술","rider":"수술보장특약","name":"질병·재해 수술 2종","amount":750000,"unit":"visit","desc":"질병 또는 재해로 치료 목적 수술을 받은 경우 지급","subs":["질병·재해 수술 2종"]},
+    {"tag":"수술","rider":"수술보장특약","name":"질병·재해 수술 3종","amount":1500000,"unit":"visit","desc":"질병 또는 재해로 치료 목적 수술을 받은 경우 지급","subs":["질병·재해 수술 3종"]},
     {"tag":"입원/통원","rider":"입원특약","name":"질병·재해 입원비","amount":10000,"unit":"day","desc":"4일 이상 입원 (3일 초과 1일당, 120일 한도).","subs":["질병·재해 입원비"]}
    ]}
  ]
@@ -236,19 +221,16 @@ textarea{width:100%;height:260px;margin:8px 0;background:var(--surface2);border:
 
 <script>
 const SEED = JSON.parse(document.getElementById('seed').textContent);
-const KEY = 'ins-data-v1', TKEY = 'ins-theme';
+const TKEY = 'ins-theme';
 const TAGS = ['사망/장해','암','뇌','심장','수술','입원/통원','상해/재해','기타'];
 const UNIT = {once:'', day:'/일', visit:'/회', limit:' 한도'};
 const CHEV = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-let D = load(), st = {p:'all', i:'all', q:'', t:'all', v:'ins'}, flip = new Set();
+let D = JSON.parse(JSON.stringify(SEED)), st = {p:'all', i:'all', q:'', t:'all', v:'ins'}, flip = new Set();
 
-function load(){ try{ const s = localStorage.getItem(KEY); if(s){ const j = JSON.parse(s); if((j.version||1) >= (SEED.version||1)) return j; } }catch(e){} return JSON.parse(JSON.stringify(SEED)); }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){} }
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const person = id => D.people.find(p => p.id === id) || {name:'미지정', color:'text3'};
 const col = p => { const c = p.color || 'mint'; return c[0] === '#' ? c : `var(--${c})`; };
-function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 1800); }
 
 function won(n){
   if(n === 0) return '0원';
@@ -264,7 +246,7 @@ function hl(s){
   return s.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => '<mark>'+m+'</mark>');
 }
 function fmtLines(t){
-  return hl(t).replace(/\n/g, '<br>').replace(/\s*[○▶]\s*/g, '<br>').replace(/\s*(※|①|②|③)/g, '<br>$1').replace(/\.\s+(?=\S)/g, '.<br>').replace(/^(<br>)+/, '').split('<br>').filter(l => l.trim());
+  return hl(t).replace(/\n/g, '<br>').replace(/\s*[○▶]\s*/g, '<br>').replace(/\s*(※|①|②|③)/g, '<br>$1').replace(/\.\s+(?=\S)/g, '.<br>').replace(/^(<br>)+/, '').split('<br>').filter(l => l.trim()).map(l => l.replace(/\.((?:\s|<\/\w+>)*)$/, '$1'));
 }
 function match(pol, it){
   if(st.t !== 'all' && it.tag !== st.t) return false;
@@ -330,7 +312,7 @@ function itemHtml(i){
   if(i.premium) meta.push(['담보별 보험료', i.premium.toLocaleString()+'원']);
   if(i.period) meta.push(['보험기간', esc(i.period) + (rn && rn.end ? ' · 다음 갱신 '+rn.end : '')]);
   const body = (det.length ? `<div class="dsc-det">${det.map(dot).join('')}</div>` : '') + (meta.length ? `<div class="dsc-meta">${meta.map(([k, v]) => `<div class="mr"><span>${k}</span><b>${v}</b></div>`).join('')}</div>` : '');
-  return `<details class="it" ${q && body ? 'open' : ''}><summary><span class="nm">${hl(i.name)}${(() => { const t = (dup(i) ? '' : hl(i.rider)) + (renew(i) ? `<span class="rn">${renew(i).n}</span>` : '') + (i.mult ? `<span class="rn">(${i.mult}배 적용)</span>` : ''); return t ? `<small>${t}</small>` : ''; })()}</span><span class="am num">${won(i.amount)}<small>${UNIT[i.unit]||''}</small></span></summary>${body ? `<div class="dsc">${body}</div>` : ''}</details>`;
+  return `<details class="it ${i.star ? 'star' : ''}" ${q && body ? 'open' : ''}><summary><span class="nm">${hl(i.name)}${(() => { const t = (dup(i) ? '' : hl(i.rider)) + (renew(i) ? `<span class="rn">${renew(i).n}</span>` : '') + (i.mult ? `<span class="rn">(${i.mult}배 적용)</span>` : ''); return t ? `<small>${t}</small>` : ''; })()}</span><span class="am num">${won(i.amount)}<small>${UNIT[i.unit]||''}</small></span></summary>${body ? `<div class="dsc">${body}</div>` : ''}</details>`;
 }
 function payLeft(pay){
   const [ey, em] = pay.end.split('.').map(Number), now = new Date();
@@ -342,7 +324,7 @@ function termsBtn(pol){
   const u = safeUrl(pol.termsUrl);
   const ic = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>';
   return u ? `<a class="terms-btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${ic}약관 보기</a>`
-           : `<button type="button" class="terms-btn" disabled title="JSON의 termsUrl에 약관 주소를 넣으면 열려요">${ic}약관 준비 중</button>`;
+           : `<button type="button" class="terms-btn" disabled title="파일의 termsUrl에 약관 주소를 넣으면 열려요">${ic}약관 준비 중</button>`;
 }
 function payBlock(pol){
   const pay = pol.pay; if(!pay) return '';
@@ -358,7 +340,6 @@ function renderIns(){
   return title + v.map(({pol, items}) => {
     const o = person(pol.owner), c = col(o), force = !!st.q.trim();
     const lv = live(pol), pd = !paying(pol), open = force || !flip.has(pol.id);
-    const opts = D.people.map(p => `<option value="${esc(p.id)}" ${p.id===pol.owner?'selected':''}>${esc(p.name)}</option>`).join('');
     const groups = TAGS.filter(t => items.some(i => i.tag === t));
     return `<div class="acc ${open?'open':''} ${lv?'':'exp'}" style="--ic:${insColor(pol.insurer)}">
       <button class="acc-head" data-pol="${esc(pol.id)}" aria-expanded="${open}">
@@ -366,7 +347,6 @@ function renderIns(){
         <div class="acc-right"><div class="acc-prem num">${pd ? (lv ? '납입 완료' : '납입 종료') : (pol.premium ? pol.premium.toLocaleString()+'원' : '미입력')}<small>${pd ? (pol.premium ? '종전 월 '+pol.premium.toLocaleString()+'원' : '') : '월 보험료'}</small></div>${CHEV}</div>
       </button>
       <div class="acc-body">
-        <div class="owner-row"><span>가입자</span><select data-own="${esc(pol.id)}" aria-label="가입자">${opts}</select></div>
         ${termsBtn(pol)}
         ${payBlock(pol)}
         ${pol.renewal ? (() => { const t = curTerm(pol.renewal); return `<div class="note">갱신형 담보 현재 구간 ${t.start} ~ ${t.end}${t.last ? '' : ' · 다음 갱신 '+t.end}</div>`; })() : ''}
@@ -380,9 +360,9 @@ const SUBS = {
   '암':['암 진단비 (일반암)','고액암 진단비','소액암·유사암 진단비','암 수술비','상피내암·경계성종양 수술비','암 입원비','상피내암·경계성종양 입원비'],
   '뇌':['뇌졸중 진단비','뇌혈관질환 진단비','양성뇌종양 진단비'],
   '심장':['급성심근경색증 진단비','허혈성심질환 진단비','특정심혈관질환 진단비'],
-  '수술':['뇌혈관질환 수술비','허혈성심질환 수술비','성인 8대 특정질환 수술비','질병·재해 수술비 (3종 기준)','조혈모세포이식 수술비','5대장기 이식 수술비','각막 이식 수술비','충수염 수술비','컴퓨터질환(VDT증후군) 수술비','상해 흉터 복원 수술비'],
+  '수술':['뇌혈관질환 수술비','허혈성심질환 수술비','성인 8대 특정질환 수술비','질병·재해 수술 1종','질병·재해 수술 2종','질병·재해 수술 3종','조혈모세포이식 수술비','5대장기 이식 수술비','각막 이식 수술비','충수염 수술비','컴퓨터질환(VDT증후군) 수술비','상해 흉터 복원 수술비'],
   '입원/통원':['질병 입원 의료비 (실손)','상해 입원 의료비 (실손)','질병 통원 의료비 [외래]','질병 통원 의료비 [처방조제]','상해 통원 의료비 [외래]','상해 통원 의료비 [처방조제]','질병·재해 입원비','성인 8대 특정질환 입원비'],
-  '상해/재해':['골절 진단비','화상 진단비','깁스 치료비','교통재해 입원 (4일 이상)','재해 장기 입원 (31일 이상)']
+  '상해/재해':['골절 진단비','화상 진단비','깁스 치료비','교통재해 입원 (4일 이상)','재해 입원 31일 이상','재해 입원 121일 이상','재해 입원 181일 이상']
 };
 function subTotals(p, sub){
   let total = 0; const parts = [];
@@ -417,8 +397,7 @@ function renderCmp(){
   return `<div class="panel-title"><span>보장 비교</span></div><div class="panel-caption">세부 보장별 합계예요. 같은 사람의 여러 계약은 합산하고, 금액을 누르면 계약별 내역이 툴팁으로 나와요. 부부 합산이 아니라 사람별 비교이고 만기된 계약은 제외했어요. 한도·일당·회당은 금액 옆에 표시했어요. 대한종신 장해는 1급 기준이고, 45세 이후 최초 진단 시 1.5배 지급은 적용해서 계산했고, 재해 상황별로 다른 지급액은 그중 최대로 계산했어요.</div>${rows || '<div class="empty">비교할 보장이 없어요.</div>'}`;
 }
 function render(){ renderStats(); $('out').innerHTML = st.v === 'cmp' ? renderCmp() : renderIns(); }
-const syncJson = () => { $('js').value = JSON.stringify(D, null, 2); };
-function all(){ applyRenewals(); renderChips(); render(); syncJson(); }
+function all(){ applyRenewals(); renderChips(); render(); }
 
 $('q').addEventListener('input', e => { st.q = e.target.value; render(); });
 document.body.addEventListener('click', e => {
@@ -436,23 +415,6 @@ document.body.addEventListener('click', e => {
   if(w && e.target.closest('.bk-amt')){ const o = w.classList.toggle('open'); w.firstElementChild.setAttribute('aria-expanded', String(o)); }
 });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') document.querySelectorAll('.bk-amtw.open').forEach(x => x.classList.remove('open')); });
-$('out').addEventListener('change', e => {
-  const id = e.target.dataset.own; if(!id) return;
-  D.policies.find(p => p.id === id).owner = e.target.value; save(); all(); toast('가입자를 바꿨어요');
-});
-$('ap').onclick = () => {
-  try{
-    const j = JSON.parse($('js').value);
-    if(!Array.isArray(j.people) || !Array.isArray(j.policies)) throw new Error('people와 policies가 필요해요');
-    j.version = j.version || SEED.version; D = j; save(); all(); toast('JSON 데이터를 적용했어요');
-  }catch(err){ toast('JSON 오류: ' + err.message); }
-};
-$('cp').onclick = async () => {
-  try{ await navigator.clipboard.writeText($('js').value); toast('클립보드에 복사했어요'); }
-  catch(e){ $('js').select(); toast('선택된 내용을 직접 복사해 주세요'); }
-};
-$('rs').onclick = () => { D = JSON.parse(JSON.stringify(SEED)); save(); st = {p:'all', i:'all', q:'', t:'all', v:'ins'}; $('q').value = ''; all(); toast('기본값으로 되돌렸어요'); };
-
 let light = false;
 try{ const t = localStorage.getItem(TKEY); light = t === 'light'; }catch(e){}
 const SUN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
