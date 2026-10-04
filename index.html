@@ -37,7 +37,35 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .metric .value{font-size:19px;font-weight:500}
 .metric .sub{font-size:12px;color:var(--text3);margin-top:2px}
 .panel-wrap{padding:0 20px}
-.sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:12px 20px 4px}
+.dash{padding:0 20px}
+.dash-t{font-size:13px;color:var(--text2);margin:16px 0 8px}
+.dash-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dc{text-align:left;background:var(--surface1);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;color:inherit}
+.dc:active{transform:scale(.98)}
+.dc .l{font-size:12px;color:var(--text2);margin-bottom:6px}
+.dc .v{font-size:19px;font-weight:500}
+.dc .s{font-size:11.5px;color:var(--text3);margin-top:5px;line-height:1.45}
+#out{scroll-margin-top:calc(var(--stk,112px) + 8px)}
+@media (max-width:420px){.vtab{font-size:14px}}
+.vtab{white-space:nowrap}
+.sit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0 0}
+.sit-btn{padding:11px 4px;border-radius:10px;border:1px solid var(--border);background:var(--surface1);color:var(--text2);font-size:13.5px;font-weight:500;cursor:pointer}
+.sit-btn.active{background:var(--mint-dim);border-color:var(--mint);color:var(--mint)}
+.sit-head{background:var(--surface2);border-radius:12px;padding:16px;margin:4px 0 0}
+.sit-head .l{font-size:12px;color:var(--text2)}
+.sit-head .v{font-size:26px;font-weight:700;margin:4px 0}
+.sit-head .n{font-size:11.5px;color:var(--text3);line-height:1.5}
+.sg{margin-top:22px}
+.sg-t{font-size:13px;font-weight:600;color:var(--mint)}
+.sit-note{font-size:11.5px;color:var(--text3);margin-top:3px}
+.sr{padding:12px 0;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:0}
+.srt{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.srt b{font-weight:500;white-space:nowrap}
+.srt small{font-size:11.5px;color:var(--text3);font-weight:400}
+.srp{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:12px;color:var(--text2)}
+.stickywrap{position:sticky;top:env(safe-area-inset-top,0px);z-index:7;background:var(--bg)}
+.sticky{background:var(--bg);padding:12px 20px 8px}
 .search{width:100%;height:42px;background:var(--surface2);border:1px solid var(--border-strong);border-radius:10px;padding:0 14px;font-size:15px}
 .search::placeholder{color:var(--text3)}
 .scroll-row{display:flex;gap:6px;overflow-x:auto;padding:10px 20px 2px;scrollbar-width:none}
@@ -52,7 +80,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .acc{margin:22px -20px;padding:0 20px;background:var(--surface1);border-left:4px solid var(--ic,var(--border-strong))}
 .idot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ic,var(--text3));margin-right:6px;vertical-align:1px}
 .acc-ins{font-size:17px;font-weight:700;color:var(--text1);letter-spacing:-.3px}
-.acc-head{position:sticky;top:calc(58px + env(safe-area-inset-top,0px));z-index:4;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0;cursor:pointer;width:100%;background:var(--surface1);border:0;border-bottom:1px solid var(--border);text-align:left;color:inherit}
+.acc-head{position:sticky;top:calc(var(--stk,112px) + env(safe-area-inset-top,0px));z-index:4;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0;cursor:pointer;width:100%;background:var(--surface1);border:0;border-bottom:1px solid var(--border);text-align:left;color:inherit}
 .acc-name{font-size:13px;font-weight:400;color:var(--text2);margin-top:3px}
 .acc-sub{font-size:12px;color:var(--text3);margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .acc-right{text-align:right;flex:none;display:flex;gap:6px;align-items:center}
@@ -120,8 +148,11 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
 <div class="app-header"><div class="app-title">보험 정리</div><button class="theme-icon-btn" id="th" aria-label="라이트 모드로 전환"></button></div>
 <div class="owner-tabs" id="pp"></div>
 <div class="summary" id="stats"></div>
-<div class="vtabs" id="vw"><button class="vtab" data-v="ins">보험사별 보기</button><button class="vtab" data-v="cmp">보장 비교</button></div>
-<div class="sticky"><input class="search" type="search" id="q" placeholder="보장 검색 (암, 뇌졸중, 입원, 수술, 보험사…)" aria-label="보장 검색"></div>
+<div class="dash" id="dash"></div>
+<div class="stickywrap" id="stk">
+<div class="vtabs" id="vw"><button class="vtab" data-v="ins">보험사별 보기</button><button class="vtab" data-v="sit">상황별 조회</button><button class="vtab" data-v="cmp">보장 비교</button></div>
+<div class="sticky" id="sb"><input class="search" type="search" id="q" placeholder="보장 검색 (암, 뇌졸중, 입원, 수술, 보험사…)" aria-label="보장 검색"></div>
+</div>
 <div class="scroll-row" id="ig"></div>
 <div class="scroll-row" id="tg"></div>
 <div class="panel-wrap" id="out"></div>
@@ -395,14 +426,89 @@ function renderCmp(){
   const rows = TAGS.filter(t => SUBS[t] && (st.t === 'all' || st.t === t)).map(t => tagHtml(t, people)).join('');
   return `<div class="panel-title"><span>보장 비교</span></div><div class="panel-caption">세부 보장별 합계예요. 같은 사람의 여러 계약은 합산하고, 금액을 누르면 계약별 내역이 툴팁으로 나와요. 부부 합산이 아니라 사람별 비교이고 만기된 계약은 제외했어요. 한도·일당·회당은 금액 옆에 표시했어요. 대한종신 장해는 1급 기준이고, 45세 이후 최초 진단 시 1.5배 지급은 적용해서 계산했고, 재해 상황별로 다른 지급액은 그중 최대로 계산했어요.</div>${rows || '<div class="empty">비교할 보장이 없어요.</div>'}`;
 }
-function render(){ renderStats(); $('out').innerHTML = st.v === 'cmp' ? renderCmp() : renderIns(); }
+const peopleSel = () => D.people.filter(p => st.p === 'all' || p.id === st.p);
+function comb(sub){
+  const rs = peopleSel().map(p => ({p, r: subTotals(p, sub)})).filter(x => x.r.total), multi = rs.length > 1; let total = 0; const parts = [];
+  rs.forEach(({p, r}) => { total += r.total; r.parts.forEach(x => parts.push({n: x.n + (multi ? ' (' + p.name + ')' : ''), ins: x.n, v: x.v})); });
+  return {total, parts};
+}
+const DASH = [
+  {l:'사망', m:'질병 사망', x:[['상해 사망','상해 ']], go:'사망'},
+  {l:'암 진단', m:'암 진단비 (일반암)', x:[['고액암 진단비','고액암 +'],['소액암·유사암 진단비','소액암 ']], go:'암 진단'},
+  {l:'뇌졸중 진단', m:'뇌졸중 진단비', x:[['뇌혈관질환 진단비','뇌혈관질환 +']], go:'뇌 진단'},
+  {l:'급성심근경색증 진단', m:'급성심근경색증 진단비', x:[['허혈성심질환 진단비','허혈성심질환 +']], go:'심장 진단'}
+];
+function renderDash(){
+  $('dash').innerHTML = `<div class="dash-t">핵심 보장 (누르면 자세히)</div><div class="dash-g">${DASH.map(d => {
+    const v = comb(d.m).total, ex = d.x.map(([k, lb]) => [lb, comb(k).total]).filter(a => a[1]).map(a => a[0] + won(a[1])).join(' · ');
+    return `<button type="button" class="dc" data-go-sit="${esc(d.go)}"><div class="l">${esc(d.l)}</div><div class="v num">${v ? won(v) : '없음'}</div>${ex ? `<div class="s">${ex}</div>` : ''}</button>`;
+  }).join('')}</div>`;
+}
+const SIL = '실제 낸 본인부담 의료비를 가입금액 한도 안에서 보상해요';
+const SITS = [
+  {k:'골절·깁스', h:'골절·깁스 정액 합계', g:[
+    {t:'바로 받는 돈', s:['골절 진단비','깁스 치료비'], sum:1},
+    {t:'입원하면 (입원 일수에 따라)', s:['교통재해 입원 (4일 이상)','재해 입원 31일 이상','재해 입원 121일 이상','재해 입원 181일 이상','질병·재해 입원비']},
+    {t:'실손 (낸 의료비 한도 내)', note:SIL, s:['상해 입원 의료비 (실손)','상해 통원 의료비 [외래]','상해 통원 의료비 [처방조제]']}]},
+  {k:'입원', g:[
+    {t:'실손 (낸 의료비 한도 내)', note:SIL, s:['질병 입원 의료비 (실손)','상해 입원 의료비 (실손)']},
+    {t:'입원 일당·정액', s:['질병·재해 입원비','성인 8대 특정질환 입원비','암 입원비','상피내암·경계성종양 입원비','교통재해 입원 (4일 이상)','재해 입원 31일 이상','재해 입원 121일 이상','재해 입원 181일 이상']}]},
+  {k:'통원·약', g:[
+    {t:'실손 통원 (회당 한도)', note:SIL, s:['질병 통원 의료비 [외래]','질병 통원 의료비 [처방조제]','상해 통원 의료비 [외래]','상해 통원 의료비 [처방조제]']}]},
+  {k:'수술', g:[
+    {t:'수술 종류별 보장', s:['질병·재해 수술 1종','질병·재해 수술 2종','질병·재해 수술 3종','충수염 수술비','뇌혈관질환 수술비','허혈성심질환 수술비','성인 8대 특정질환 수술비','암 수술비','상피내암·경계성종양 수술비','조혈모세포이식 수술비','5대장기 이식 수술비','각막 이식 수술비','컴퓨터질환(VDT증후군) 수술비','상해 흉터 복원 수술비']}]},
+  {k:'암 진단', h:'일반암 진단 시 정액 합계', g:[
+    {t:'일반암 진단 시', s:['암 진단비 (일반암)'], sum:1},
+    {t:'고액암이면 추가', s:['고액암 진단비']},
+    {t:'소액암·유사암이면', s:['소액암·유사암 진단비']},
+    {t:'치료 중에 받는 돈', s:['암 수술비','상피내암·경계성종양 수술비','암 입원비','상피내암·경계성종양 입원비']}]},
+  {k:'뇌 진단', h:'뇌졸중 진단 시 정액 합계', g:[
+    {t:'뇌졸중 진단 시', s:['뇌졸중 진단비','뇌혈관질환 진단비'], sum:1},
+    {t:'그 밖의 뇌질환', s:['양성뇌종양 진단비']},
+    {t:'수술하면', s:['뇌혈관질환 수술비']}]},
+  {k:'심장 진단', h:'급성심근경색증 진단 시 정액 합계', g:[
+    {t:'급성심근경색증 진단 시', s:['급성심근경색증 진단비','허혈성심질환 진단비'], sum:1},
+    {t:'그 밖의 심장질환', s:['특정심혈관질환 진단비']},
+    {t:'수술하면', s:['허혈성심질환 수술비']}]},
+  {k:'교통사고', h:'교통사고 사망 시 정액 합계', hn:'대중교통 이용 중 사고(메리츠 3억원)와 대한생명의 가장 큰 구간이 포함된 최대 금액이에요.', g:[
+    {t:'사망 시', s:['교통상해 사망·후유장해 (교통사고 시 추가)','상해 사망'], sum:1},
+    {t:'후유장해가 남으면', s:['교통상해 사망·후유장해 (교통사고 시 추가)','상해 후유장해']},
+    {t:'다쳤을 때', s:['골절 진단비','깁스 치료비','교통재해 입원 (4일 이상)']},
+    {t:'실손 (낸 의료비 한도 내)', note:SIL, s:['상해 입원 의료비 (실손)','상해 통원 의료비 [외래]','상해 통원 의료비 [처방조제]']}]},
+  {k:'사망', h:'질병으로 사망 시 정액 합계', g:[
+    {t:'질병으로 사망 시', s:['질병 사망'], sum:1},
+    {t:'상해로 사망 시', s:['상해 사망','교통상해 사망·후유장해 (교통사고 시 추가)']}]}
+];
+function sitRow(x){
+  return `<div class="sr"><div class="srt"><span>${esc(x.k)}</span><b class="num">${won(x.r.total)}${x.u ? `<small>${x.u}</small>` : ''}</b></div><div class="srp">${x.r.parts.map(p => `<span><i class="idot" style="--ic:${insColor(p.ins)}"></i>${esc(p.n)} ${won(p.v)}${x.u}</span>`).join('')}</div></div>`;
+}
+function renderSit(){
+  const sit = SITS.find(x => x.k === st.sit) || SITS[0];
+  const btns = `<div class="sit-grid">${SITS.map(x => `<button type="button" class="sit-btn ${x.k === sit.k ? 'active' : ''}" data-sit="${esc(x.k)}">${esc(x.k)}</button>`).join('')}</div>`;
+  let sum = 0;
+  const groups = sit.g.map(g => {
+    const rows = g.s.map(k => ({k, r: comb(k), u: subUnit(k)})).filter(x => x.r.total);
+    if(!rows.length) return '';
+    if(g.sum) rows.forEach(x => { sum += x.r.total; });
+    return `<div class="sg"><div class="sg-t">${esc(g.t)}</div>${g.note ? `<div class="sit-note">${esc(g.note)}</div>` : ''}${rows.map(sitRow).join('')}</div>`;
+  }).join('');
+  const head = sum ? `<div class="sit-head"><div class="l">${esc(sit.h)}</div><div class="v num">${won(sum)}</div><div class="n">${esc(sit.hn || '')}${sit.hn ? ' ' : ''}단순 합산한 예상 금액이에요.</div></div>` : '';
+  return btns + `<div class="panel-title"><span>${esc(sit.k)}</span></div><div class="panel-caption">이 상황에서 받을 수 있는 보장을 보험사별로 모았어요. 실제 지급 여부와 금액은 약관, 진단 내용, 가입 후 경과 기간(감액 기간 등)에 따라 달라요.</div>${head}${groups || '<div class="empty">해당하는 보장이 없어요.</div>'}`;
+}
+function render(){
+  renderStats(); renderDash();
+  $('tg').style.display = $('sb').style.display = st.v === 'sit' ? 'none' : '';
+  $('out').innerHTML = st.v === 'cmp' ? renderCmp() : st.v === 'sit' ? renderSit() : renderIns();
+}
 function all(){ applyRenewals(); renderChips(); render(); }
 
 $('q').addEventListener('input', e => { st.q = e.target.value; render(); });
 document.body.addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   const d = b.dataset;
-  if(d.p){ st.p = d.p; renderChips(); render(); }
+  if(d.sit){ st.sit = d.sit; render(); }
+  else if(d.goSit){ st.v = 'sit'; st.sit = d.goSit; renderChips(); render(); $('out').scrollIntoView(); }
+  else if(d.p){ st.p = d.p; renderChips(); render(); }
   else if(d.i){ st.i = d.i; renderChips(); render(); }
   else if(d.t){ st.t = d.t; renderChips(); render(); }
   else if(d.v){ st.v = d.v; renderChips(); render(); }
@@ -421,6 +527,10 @@ const MOON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke
 function theme(){ document.body.classList.toggle('light-theme', light); $('th').innerHTML = light ? MOON : SUN; $('th').setAttribute('aria-label', light ? '다크 모드로 전환' : '라이트 모드로 전환'); }
 $('th').onclick = () => { light = !light; theme(); try{ localStorage.setItem(TKEY, light ? 'light' : 'dark'); }catch(e){} };
 theme(); all();
+function setStk(){ document.documentElement.style.setProperty('--stk', $('stk').offsetHeight + 'px'); }
+setStk();
+if(typeof window !== 'undefined'){ window.addEventListener('resize', setStk); window.addEventListener('load', setStk); }
+if(typeof ResizeObserver !== 'undefined') new ResizeObserver(setStk).observe($('stk'));
 </script>
 </body>
 </html>
