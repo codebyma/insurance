@@ -130,10 +130,11 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
 .terms-btn:disabled{color:var(--text3);border-style:dashed;cursor:not-allowed}
 .payb{background:var(--surface2);border-radius:10px;padding:12px;margin:0 0 12px}
 .payt{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
-.payl{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-top:8px}
+.payl{gap:14px;display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-top:8px}
 .payl.first{margin-top:0}
+.payl>span{flex:none;white-space:nowrap}
 .payb .note{margin:8px 0 0}
-.payl b{color:var(--text1);font-weight:500}
+.payl b{color:var(--text1);font-weight:500;text-align:right;white-space:normal}
 .bk-line{margin-bottom:10px}
 .bk-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;align-items:flex-start}
 .bk-name{font-size:14px}.bk-name small{display:block;font-size:11.5px;color:var(--text2);margin-top:2px}
@@ -159,7 +160,7 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
  "version":23,
  "people":[{"id":"me","name":"나","color":"blue"},{"id":"wife","name":"와이프","color":"gold"}],
  "policies":[
-  {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"2010.12.21 ~ 2082.12.21 (담보별 상이)","note":"월 4만원. 실손(입원·통원 의료비) 포함. 갱신형 담보는 3년마다 갱신돼요. 갱신 후에는 보험료가 달라질 수 있어요","pay":{"label":"20년납 / 100세 만기","end":"2030.11"},"renewal":{"from":"2025.12.21","years":3,"until":"2082.12.21"},"termsUrl":"",
+  {"id":"p1","owner":"me","insurer":"메리츠","product":"무배당 메리츠 가족단위보험 M-Story1009(1종)","premium":40000,"period":"2010.12.21 ~ 2082.12.21 (100세 만기, 담보별 상이)","note":"","pay":{"label":"20년납 / 100세 만기","end":"2030.11"},"renewal":{"from":"2025.12.21","years":3,"until":"2082.12.21"},"termsUrl":"",
    "items":[
     {"tag":"사망/장해","rider":"일반상해사망후유장해","name":"일반상해 사망·후유장해","amount":50000000,"unit":"once","desc":"사고로 사망 또는 후유장해 발생 시 지급","premium":7250,"period":"2010.12.21 ~ 2082.12.21","subs":["상해 사망","상해 후유장해"]},
     {"tag":"사망/장해","rider":"교통상해사망.후유장해","name":"교통상해 사망·후유장해","amount":50000000,"unit":"once","desc":"교통사고로 사망 또는 후유장해 발생 시 지급","premium":4950,"period":"2010.12.21 ~ 2062.12.21","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"]},
@@ -189,7 +190,7 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
     {"tag":"기타","rider":"이륜차운전중상해부보장","name":"이륜차 운전 중 상해 부보장","amount":0,"unit":"once","desc":"이륜차 운전 중 상해는 보장하지 않음"},
     {"tag":"기타","rider":"보험료자동납입특약","name":"보험료 자동납입 특약","amount":0,"unit":"once","desc":""}
    ]},
-  {"id":"p3","owner":"me","insurer":"흥국화재","product":"무배당 행복을 多주는 가족사랑종합보험(21.08)_2종(무해지 납입후 표준환급률지급형)","premium":50124,"period":"2021.11.05 ~ 2062.11.05 (담보별 2041.11.05 또는 2062.11.05)","note":"월 50,124원. 질병후유장해(3~100%) 보험료 8,980원은 화면에서 잘려서 월 합계에서 계산한 값이에요","pay":{"label":"20년납","end":"2041.10"},"termsUrl":"",
+  {"id":"p3","owner":"me","insurer":"흥국화재","product":"무배당 행복을 多주는 가족사랑종합보험(21.08)_2종(무해지 납입후 표준환급률지급형)","premium":50124,"period":"2021.11.05 ~ 2062.11.05 (80세 만기, 담보별 2041.11.05 또는 2062.11.05)","note":"","pay":{"label":"20년납","end":"2041.10"},"termsUrl":"",
    "items":[
     {"tag":"사망/장해","rider":"일반상해후유장해(80%이상)","name":"일반상해후유장해(80%이상)","amount":1000000,"unit":"once","desc":"보험기간 중 상해로 장해분류표에서 정한 장해지급률이 80% 이상에 해당하는 후유장해 상태가 된 경우 금액 지급 ※ 최초 1회","premium":11,"period":"2021.11.05 ~ 2062.11.05","subs":["상해 후유장해"]},
     {"tag":"사망/장해","rider":"질병후유장해(80%이상)(감액없음)","name":"질병후유장해(80%이상)(감액없음)","amount":1000000,"unit":"once","desc":"보험기간 중 진단확정된 질병으로 장해분류표에서 정한 장해지급률 80% 이상에 해당하는 후유장해 상태가 된 경우 금액 지급 ※ 최초 1회","premium":36,"period":"2021.11.05 ~ 2062.11.05","subs":["질병 후유장해"]},
@@ -203,16 +204,16 @@ button.bk-amt>span{display:inline-flex;align-items:baseline;line-height:1}
     {"tag":"수술","rider":"뇌혈관질환수술비","name":"뇌혈관질환수술비","amount":5000000,"unit":"once","premium":750,"period":"2021.11.05 ~ 2062.11.05","desc":"보험기간 중 뇌혈관질환으로 진단확정되고 그 치료를 직접적인 목적으로 수술을 받은 때에는 수술 1회당 금액 지급 ※ 계약일로부터 1년 미만 발생 시 지급금액의 50% 지급","subs":["뇌혈관질환 수술비"]},
     {"tag":"기타","rider":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","name":"보험료 납입면제대상보장(6대질병진단 및 상해·질병후유장해(80%이상))","amount":100000,"unit":"once","desc":"보험기간 중 ① 암보장개시일 이후 암(유사암 제외)으로 진단받은 경우 ② 뇌졸중, 급성심근경색증, 말기만성폐질환, 말기간경화, 말기신부전증으로 진단받은 경우 ③ 상해 또는 진단확정된 질병으로 장해분류표에서 정한 장해지급률이 80% 이상에 해당하는 후유장해 상태가 된 경우, 이 중 한 가지 사유가 발생한 때에는 보험가입금액을 보험수익자에게 지급 ※ 최초 1회 ※ [암보장개시일] 보험계약일로부터 그날을 포함하여 90일이 지난 날의 다음날","premium":66,"period":"2021.11.05 ~ 2041.11.05"}
    ]},
-  {"id":"p4","owner":"me","insurer":"예별손해","product":"무배당 건강명의 4대질병진단보험(1805)(1종)(해지환급금미지급형)(2183P)","premium":34800,"period":"2018.05.29 ~ 2062.05.29","note":"월 34,800원. 캡처에 보인 담보만 입력했어요. 담보별 보험료와 4대질병 중 다른 담보는 추가 가능해요","pay":{"label":"20년납","end":"2038.04"},"termsUrl":"",
+  {"id":"p4","owner":"me","insurer":"예별손해","product":"무배당 건강명의 4대질병진단보험(1805)(1종)(해지환급금미지급형)(2183P)","premium":34800,"period":"2018.05.29 ~ 2062.05.29 (80세 만기)","note":"","pay":{"label":"20년납","end":"2038.04"},"termsUrl":"",
    "items":[
     {"tag":"암","rider":"암진단비(소액암제외)","name":"암진단비(소액암제외)","amount":35000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["암 진단비 (일반암)"],"star":true},
     {"tag":"암","rider":"소액암진단비","name":"소액암진단비","amount":10000000,"unit":"once","desc":"","period":"2018.05.29 ~ 2062.05.29","subs":["소액암·유사암 진단비"],"star":true}
    ]},
-  {"id":"p5","owner":"me","insurer":"교보","product":"(무)라이프플래닛e정기보험 II (순수보장형,비흡연체)","premium":14520,"period":"","note":"","pay":{"label":"80세납 (2062.10까지)","end":"2062.10"},"termsUrl":"",
+  {"id":"p5","owner":"me","insurer":"교보","product":"(무)라이프플래닛e정기보험 II (순수보장형,비흡연체)","premium":14520,"period":"2021.11.05 ~ 2062.11.05 (80세 만기)","note":"","pay":{"label":"41년납","end":"2062.10"},"termsUrl":"",
    "items":[
     {"tag":"사망/장해","rider":"사망보험금","name":"사망보험금","amount":30000000,"unit":"once","desc":"보험기간 중 피보험자가 사망한 경우 지급","subs":["질병 사망","상해 사망"]}
    ]},
-  {"id":"p2","owner":"me","insurer":"대한생명","status":"paid","product":"(무)대한종신","premium":104750,"period":"","note":"보험료 납입이 완료됨 (종전 월납 104,750원). 종피 및 자녀특약은 앱 화면에서 생략됨","termsUrl":"",
+  {"id":"p2","owner":"me","insurer":"대한생명","status":"paid","product":"(무)대한종신","premium":104750,"period":"2002.06.07 ~ 9999.12.31 (종신)","note":"","termsUrl":"",
    "items":[
     {"tag":"사망/장해","rider":"주계약","name":"사망 · 장해 1급","amount":50000000,"unit":"once","desc":"보험기간 중 사망하거나 장해등급분류표 1급 장해상태가 된 경우. 계약일로부터 2년 미만 경과 시 (재해 외 원인) 가입금액의 30% 지급.","subs":["질병 사망","질병 후유장해","상해 사망","상해 후유장해"]},
     {"tag":"사망/장해","rider":"재해사망특약","name":"차량탑승 중 교통재해 사망 · 장해 1급","amount":50000000,"unit":"once","desc":"","subs":["교통상해 사망·후유장해 (교통사고 시 추가)"],"group":"재해사망-교통"},
@@ -355,11 +356,12 @@ function termsBtn(pol){
            : `<button type="button" class="terms-btn" disabled title="파일의 termsUrl에 약관 주소를 넣으면 열려요">${ic}약관 준비 중</button>`;
 }
 function payBlock(pol){
-  const pay = pol.pay; if(!pay) return '';
-  const left = payLeft(pay);
-  return `<div class="payb"><div class="payl first"><span>납입기간</span><b>${esc(pay.label)}</b></div>
-    <div class="payl"><span>납입 완료 예정</span><b class="num">${esc(pay.end)} (${leftTxt(pay)})</b></div>
-    ${left ? '<div class="note">남은 횟수는 오늘 날짜 기준이고 이번 달 납입분을 포함해요.</div>' : ''}</div>`;
+  const pay = pol.pay, rows = [];
+  if(pol.period) rows.push(['보험기간', esc(pol.period)]);
+  if(pay){ rows.push(['납입기간', esc(pay.label)]); rows.push(['납입 완료 예정', `${esc(pay.end)} (${leftTxt(pay)})`]); }
+  if(pol.renewal){ const t = curTerm(pol.renewal); rows.push(['갱신형 담보 현재 구간', `${t.start} ~ ${t.end}${t.last ? '' : ' · 다음 갱신 ' + t.end}`]); }
+  if(!rows.length) return '';
+  return `<div class="payb">${rows.map(([k, v], n) => `<div class="payl ${n ? '' : 'first'}"><span>${k}</span><b class="num">${v}</b></div>`).join('')}</div>`;
 }
 function renderIns(){
   const v = visible().sort((a, b) => live(b.pol) - live(a.pol));
@@ -377,8 +379,7 @@ function renderIns(){
       <div class="acc-body">
         ${termsBtn(pol)}
         ${payBlock(pol)}
-        ${pol.renewal ? (() => { const t = curTerm(pol.renewal); return `<div class="note">갱신형 담보 현재 구간 ${t.start} ~ ${t.end}${t.last ? '' : ' · 다음 갱신 '+t.end}</div>`; })() : ''}
-        ${pol.period ? `<div class="note">보험기간 ${esc(pol.period)}</div>` : ''}${pol.note ? `<div class="note">${esc(pol.note)}</div>` : ''}
+        ${pol.note ? `<div class="note">${esc(pol.note)}</div>` : ''}
         ${groups.map(t => `<div class="gt">${t}</div>${items.filter(i => i.tag === t).map(itemHtml).join('')}`).join('')}
       </div></div>`;
   }).join('');
@@ -431,15 +432,18 @@ function comb(sub){
   return {total, parts};
 }
 const DASH = [
-  {l:'사망', m:'질병 사망', x:[['상해 사망','상해 ']], go:'사망'},
-  {l:'암 진단', m:'암 진단비 (일반암)', x:[['고액암 진단비','고액암 +'],['소액암·유사암 진단비','소액암 ']], go:'암 진단'},
-  {l:'뇌졸중 진단', m:'뇌졸중 진단비', x:[['뇌혈관질환 진단비','뇌혈관질환 +']], go:'뇌 진단'},
-  {l:'급성심근경색증 진단', m:'급성심근경색증 진단비', x:[['허혈성심질환 진단비','허혈성심질환 +']], go:'심장 진단'}
+  {l:'사망', m:[['', '질병 사망']], x:[['상해 사망','상해 ']], go:'사망'},
+  {l:'암 진단', m:[['', '암 진단비 (일반암)']], x:[['고액암 진단비','고액암 +'],['소액암·유사암 진단비','소액암 ']], go:'암 진단'},
+  {l:'뇌 진단', m:[['뇌졸중 ', '뇌졸중 진단비'], ['뇌혈관질환 ', '뇌혈관질환 진단비']], x:[], go:'뇌 진단'},
+  {l:'심장 진단', m:[['급성심근경색증 ', '급성심근경색증 진단비'], ['허혈성심질환 ', '허혈성심질환 진단비']], x:[], go:'심장 진단'}
 ];
 function renderDash(){
   $('dash').innerHTML = `<div class="dash-t">핵심 보장 (누르면 자세히)</div><div class="dash-g">${DASH.map(d => {
-    const v = comb(d.m).total, ex = d.x.map(([k, lb]) => [lb, comb(k).total]).filter(a => a[1]).map(a => a[0] + won(a[1])).join(' · ');
-    return `<button type="button" class="dc" data-go-sit="${esc(d.go)}"><div class="l">${esc(d.l)}</div><div class="v num">${v ? won(v) : '없음'}</div>${ex ? `<div class="s">${ex}</div>` : ''}</button>`;
+    const ms = d.m.map(([lb, k]) => [lb, comb(k).total]), v = ms.reduce((a, x) => a + x[1], 0);
+    const bd = ms.length > 1 ? ms.filter(x => x[1]).map(x => x[0] + won(x[1])).join(' + ') : '';
+    const ex = d.x.map(([k, lb]) => [lb, comb(k).total]).filter(a => a[1]).map(a => a[0] + won(a[1])).join(' · ');
+    const sub = [bd, ex].filter(Boolean).join(' · ');
+    return `<button type="button" class="dc" data-go-sit="${esc(d.go)}"><div class="l">${esc(d.l)}</div><div class="v num">${v ? won(v) : '없음'}</div>${sub ? `<div class="s">${sub}</div>` : ''}</button>`;
   }).join('')}</div>`;
 }
 const SIL = '실제 낸 본인부담 의료비를 가입금액 한도 안에서 보상해요';
