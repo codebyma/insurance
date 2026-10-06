@@ -39,22 +39,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .panel-wrap{padding:0 20px}
 .dash{padding:0 20px}
 .dash-t{font-size:13px;color:var(--text2);margin:16px 0 8px}
-.dash-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.dc{text-align:left;background:var(--surface1);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;color:inherit}
+.dash-g{display:grid;grid-template-columns:1fr;gap:10px}
+.dc{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center;text-align:left;background:var(--surface1);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;color:inherit}
 .dc:active{transform:scale(.98)}
-.dc .l{font-size:12px;color:var(--text2);margin-bottom:6px}
-.dc .v{font-size:19px;font-weight:500}
-.dc .s{font-size:11.5px;color:var(--text3);margin-top:5px;line-height:1.45}
+.dc .l{grid-column:1;grid-row:1;font-size:13px;font-weight:500;color:var(--text1)}
+.dc .v{grid-column:2;grid-row:1 / span 2;font-size:15px;font-weight:500;text-align:right}
+.dc .s{grid-column:1;grid-row:2;font-size:11.5px;color:var(--text3);margin-top:4px;line-height:1.45}
 #out{scroll-margin-top:calc(var(--stk,112px) + 8px)}
 @media (max-width:420px){.vtab{font-size:14px}}
 .vtab{white-space:nowrap}
 .sit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0 0}
 .sit-btn{padding:11px 4px;border-radius:10px;border:1px solid var(--border);background:var(--surface1);color:var(--text2);font-size:13.5px;font-weight:500;cursor:pointer}
 .sit-btn.active{background:var(--mint-dim);border-color:var(--mint);color:var(--mint)}
-.sit-head{background:var(--surface2);border-radius:12px;padding:16px;margin:4px 0 0}
-.sit-head .l{font-size:12px;color:var(--text2)}
-.sit-head .v{font-size:26px;font-weight:700;margin:4px 0}
-.sit-head .n{font-size:11.5px;color:var(--text3);line-height:1.5}
+.sit-head{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center;background:var(--surface2);border-radius:12px;padding:16px;margin:4px 0 0}
+.sit-head .l{grid-column:1;grid-row:1;font-size:13px;color:var(--text2)}
+.sit-head .v{grid-column:2;grid-row:1 / span 2;font-size:20px;font-weight:700;text-align:right}
+.sit-head .n{grid-column:1;grid-row:2;font-size:11.5px;color:var(--text3);line-height:1.5;margin-top:4px}
 .sg{margin-top:22px}
 .sg-t{font-size:13px;font-weight:600;color:var(--mint)}
 .sit-note{font-size:11.5px;color:var(--text3);margin-top:3px}
@@ -107,6 +107,7 @@ details.it summary::-webkit-details-marker{display:none}
 .mr+.mr{margin-top:6px}
 .mr b{font-weight:500;color:var(--text1);text-align:right}
 .dsc .dl{display:flex;gap:8px;align-items:flex-start}
+.dsc .dl.nd{padding-left:12px}
 .dsc .dl+.dl{margin-top:3px}
 .bd{flex:none;width:4px;height:4px;border-radius:50%;background:var(--text3);margin-top:8px}
 .dsc{background:var(--surface2);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:12.5px;color:var(--text2);line-height:1.6}
@@ -335,8 +336,8 @@ function renew(i){
 }
 function itemHtml(i){
   const q = st.q.trim();
-  const dot = l => `<div class="dl"><i class="bd"></i><span>${l}</span></div>`;
-  const det = [...(i.desc ? fmtLines(i.desc) : []), i.mult ? '45세 이후 최초 진단 1.5배 적용: 기본 '+won(i.base)+' × '+i.mult+'배 = '+won(i.amount) : ''].filter(Boolean);
+  const dot = l => /^(<mark>)?[※①②③]/.test(l) ? `<div class="dl nd"><span>${l}</span></div>` : `<div class="dl"><i class="bd"></i><span>${l}</span></div>`;
+  const det = [...(i.desc ? fmtLines(i.desc) : [])].filter(Boolean);
   const rn = renew(i), meta = [];
   if(i.premium) meta.push(['담보별 보험료', i.premium.toLocaleString()+'원']);
   if(i.period) meta.push(['보험기간', esc(i.period) + (rn && rn.end ? ' · 다음 갱신 '+rn.end : '')]);
