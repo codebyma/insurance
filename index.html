@@ -1171,6 +1171,146 @@
       border-radius: 3px;
       background: var(--c, var(--mint))
     }
+
+    .vtabs {
+      overflow-x: auto;
+      scrollbar-width: none
+    }
+
+    .vtabs::-webkit-scrollbar {
+      display: none
+    }
+
+    .vtab {
+      flex: 1 0 auto;
+      padding-left: 10px;
+      padding-right: 10px
+    }
+
+    @media (max-width:420px) {
+      .vtab {
+        font-size: 13px;
+        padding-left: 5px;
+        padding-right: 5px
+      }
+    }
+
+    @media (max-width:360px) {
+      .vtab {
+        font-size: 12px
+      }
+    }
+
+    .tl-sum {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px
+    }
+
+    .tl-chart {
+      margin-top: 14px;
+      background: var(--surface1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px 10px
+    }
+
+    .tl-chart svg {
+      display: block;
+      width: 100%;
+      height: auto
+    }
+
+    .tl-chart text {
+      font-family: 'Roboto', sans-serif;
+      fill: var(--text3)
+    }
+
+    .tl-chart .tv {
+      fill: var(--text1);
+      font-weight: 500
+    }
+
+    .tl-leg {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text2)
+    }
+
+    .tl-leg span {
+      display: inline-flex;
+      align-items: center
+    }
+
+    .tl-leg .hz {
+      width: 12px;
+      height: 9px;
+      margin-right: 6px;
+      border-radius: 2px;
+      border: 1px dashed var(--text3);
+      background: repeating-linear-gradient(45deg, var(--border-strong) 0 2px, transparent 2px 4px)
+    }
+
+    .tl-leg .hz.g {
+      border-color: var(--gold);
+      background: repeating-linear-gradient(45deg, var(--gold) 0 2px, transparent 2px 4px)
+    }
+
+    .tl-sec {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 26px 0 4px
+    }
+
+    .tl-ev {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 10px
+    }
+
+    .tl-ev .h {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px
+    }
+
+    .tl-ev .w {
+      font-size: 13px;
+      color: var(--text2)
+    }
+
+    .tl-ev .yl {
+      color: var(--blue);
+      font-weight: 500;
+      margin-left: 4px
+    }
+
+    .tl-ev .a {
+      font-size: 17px;
+      font-weight: 700
+    }
+
+    .tl-ev .d {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.55;
+      margin-top: 5px
+    }
+
+    .tl-ev .dn {
+      color: var(--mint);
+      font-weight: 500
+    }
+
+    .tl-ev .cy {
+      color: var(--gold)
+    }
   </style>
 </head>
 
@@ -1183,7 +1323,7 @@
   <div class="dash" id="dash"></div>
   <div class="stickywrap" id="stk">
     <div class="vtabs" id="vw"><button class="vtab" data-v="ins">보험사별 보기</button><button class="vtab" data-v="sit">상황별
-        조회</button><button class="vtab" data-v="cmp">보장 비교</button></div>
+        조회</button><button class="vtab" data-v="cmp">보장 비교</button><button class="vtab" data-v="tl">타임라인</button></div>
     <div class="sticky" id="sb"><input class="search" type="search" id="q" placeholder="보장 검색 (암, 뇌졸중, 입원, 수술, 보험사…)"
         aria-label="보장 검색"></div>
   </div>
@@ -1333,6 +1473,7 @@
       $('ig').innerHTML = rt('모든 보험사', st.i === 'all', 'data-i="all"') + ins.map(n => `<button class="range-tab ${st.i === n ? 'active' : ''}" data-i="${esc(n)}"><i class="idot" style="--ic:${insColor(n)}"></i>${esc(n)}</button>`).join('');
       $('tg').innerHTML = rt('모든 보장', st.t === 'all', 'data-t="all"') + TAGS.map(t => rt(t, st.t === t, `data-t="${t}"`)).join('');
       [...$('vw').children].forEach(b => b.classList.toggle('active', b.dataset.v === st.v));
+      { const vw = $('vw'), a = vw.querySelector('.active'); if (a && vw.scrollWidth > vw.clientWidth) vw.scrollLeft = a.offsetLeft - (vw.clientWidth - a.offsetWidth) / 2; }
     }
     function renderStats() {
       const pols = D.policies.filter(okPol);
@@ -1620,10 +1761,89 @@
       const head = sum ? `<div class="sit-head"><div class="l">${esc(sit.h)}</div><div class="v num">${won(sum)}</div><div class="n">${esc(sit.hn || '')}${sit.hn ? ' ' : ''}단순 합산한 예상 금액이에요.</div></div>` : '';
       return btns + `<div class="panel-title"><span>${esc(sit.k)}</span></div><div class="panel-caption">이 상황에서 받을 수 있는 보장을 보험사별로 모았어요. 실제 지급 여부와 금액은 약관, 진단 내용, 가입 후 경과 기간(감액 기간 등)에 따라 달라요.</div>${head}${groups || '<div class="empty">해당하는 보장이 없어요.</div>'}`;
     }
+
+    const relTxt = n => { if (n <= 0) return '이번 달'; const y = Math.floor(n / 12), m = n % 12; return (y ? y + '년 ' : '') + (m ? m + '개월 ' : '') + '후'; };
+    const mTxt = m => `${Math.floor(m / 12)}.${pad2(m % 12 + 1)}`;
+    const manTxt = n => (Math.round(n / 1000) / 10).toLocaleString() + '만';
+    const birthOf = pol => (D.people.find(x => x.id === pol.owner) || {}).birth;
+    const ageOf = (pol, y) => { const b = birthOf(pol); return b ? ` · ${person(pol.owner).name} ${y - b}세` : ''; };
+    const isSil = i => /의료비/.test(i.rider + i.name);
+    function renewParts(pol) {
+      if (!pol.renewal) return { sil: 0, dx: 0 };
+      const rn = pol.items.filter(i => /^갱신형/.test(i.rider)), sum = f => rn.filter(f).reduce((a, i) => a + (i.premium || 0), 0), pr = pol.premium || 0;
+      const sil = Math.min(pr, sum(isSil)), dx = Math.min(pr - sil, sum(i => !isSil(i)));
+      return { sil, dx };
+    }
+    function renderTl() {
+      const now = new Date(), nowM = now.getFullYear() * 12 + now.getMonth(), ns = !!st.nosil;
+      const pols = D.policies.filter(okPol).filter(paying);
+      const rows = pols.filter(p => p.premium && p.pay && p.pay.end).map(p => {
+        const [ey, em] = p.pay.end.split('.').map(Number), rp = renewParts(p);
+        return { p, endM: ey * 12 + em - 1, sil: ns ? 0 : rp.sil, dx: rp.dx, pr: p.premium - (ns ? rp.sil : 0), silAll: rp.sil };
+      }).filter(r => r.endM >= nowM);
+      const skip = pols.filter(p => p.premium && !(p.pay && p.pay.end)).length;
+      const tog = `<div class="scroll-row" style="padding:12px 0 0"><button type="button" class="range-tab ${ns ? 'active' : ''}" data-nosil="1">실손 제외하고 보기</button></div>`;
+      if (!rows.length) return `<div class="panel-title"><span>월 보험료 타임라인</span></div>${tog}<div class="empty">납입 중인 계약이 없어요.</div>`;
+
+      const bnd = [...new Set(rows.map(r => r.endM + 1))].sort((a, b) => a - b), pts = [nowM, ...bnd], totM = pts[pts.length - 1] - nowM;
+      const sumBy = (arr, k) => arr.reduce((a, r) => a + r[k], 0);
+      const segs = pts.slice(0, -1).map((b0, k) => {
+        const act = rows.filter(r => r.endM >= b0), end = rows.filter(r => r.endM < b0 && (r.sil || r.dx));
+        return { b0, b1: pts[k + 1], act, end, base: sumBy(act, 'pr'), cs: sumBy(end, 'sil'), cd: sumBy(end, 'dx') };
+      });
+      const maxV = Math.max(1, ...segs.map(g => g.base + g.cs + g.cd)), W = 340, H = 176, L = 6, R = 6, T = 22, B = 24, pw = W - L - R, ph = H - T - B;
+      const X = m => L + (m - nowM) / totM * pw, Y = v => T + ph - v / maxV * ph;
+      const pat = (id, c) => `<pattern id="${id}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" style="fill:var(--surface1)"/><line x1="0" y1="0" x2="0" y2="5" style="stroke:${c};stroke-width:1.6"/></pattern>`;
+      let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="월 보험료 변화 그래프"><defs>${pat('tlh', 'var(--text3)')}${pat('tlg', 'var(--gold)')}</defs>`;
+      const box = (x, w, v0, v1, st0) => `<rect x="${x.toFixed(1)}" y="${Y(v1).toFixed(1)}" width="${Math.max(w - 1, 0.5).toFixed(1)}" height="${(Y(v0) - Y(v1)).toFixed(1)}" style="${st0}"/>`;
+      segs.forEach(g => {
+        const x0 = X(g.b0), w = X(g.b1) - x0; let acc = 0;
+        g.act.forEach(r => { svg += box(x0, w, acc, acc + r.pr, `fill:${insColor(r.p.insurer)}`); acc += r.pr; });
+        if (g.cs) { svg += box(x0, w, acc, acc + g.cs, 'fill:url(#tlh);stroke:var(--text3);stroke-dasharray:3 2;stroke-width:1'); acc += g.cs; }
+        if (g.cd) { svg += box(x0, w, acc, acc + g.cd, 'fill:url(#tlg);stroke:var(--gold);stroke-dasharray:3 2;stroke-width:1'); acc += g.cd; }
+        if (w >= 34) svg += `<text class="tv" x="${(x0 + w / 2).toFixed(1)}" y="${(Y(acc) - 5).toFixed(1)}" text-anchor="middle" font-size="11">${manTxt(g.base)}</text>`;
+      });
+      pts.forEach((m, k) => {
+        const x = X(m), anc = k === 0 ? 'start' : k === pts.length - 1 ? 'end' : 'middle';
+        svg += `<line x1="${x.toFixed(1)}" y1="${T}" x2="${x.toFixed(1)}" y2="${T + ph + 4}" style="stroke:var(--border-strong);stroke-dasharray:2 3"/><text x="${x.toFixed(1)}" y="${H - 8}" text-anchor="${anc}" font-size="10.5">${k === 0 ? '지금' : Math.floor(m / 12)}</text>`;
+      });
+      svg += '</svg>';
+      const insList = [...new Set(rows.map(r => r.p.insurer))];
+      const leg = `<div class="tl-leg">${insList.map(n => `<span><i class="idot" style="--ic:${insColor(n)}"></i>${esc(n)}</span>`).join('')}${segs.some(g => g.cs) ? '<span><i class="hz"></i>실손 계속 납입 가능분</span>' : ''}${segs.some(g => g.cd) ? '<span><i class="hz g"></i>진단비 갱신형 계속 납입 가능분</span>' : ''}</div>`;
+
+      const nowSum = segs[0].base, left = rows.reduce((a, r) => a + r.pr * (r.endM - nowM + 1), 0), silNow = sumBy(rows, 'silAll');
+      const sub0 = ns ? '실손 제외 기준' : (silNow ? `실손 약 ${silNow.toLocaleString()}원 포함` : '');
+      const sum = `<div class="tl-sum"><div class="metric"><div class="label">지금 월 보험료</div><div class="value num">${nowSum.toLocaleString()}원</div>${sub0 ? `<div class="sub">${sub0}</div>` : ''}</div><div class="metric"><div class="label">남은 납입 총액</div><div class="value num">${won(left)}</div><div class="sub">납입 완료 예정일 기준${ns ? ' · 실손 제외' : ''}</div></div></div>`;
+
+      const ev = pts.slice(1).map((m, k) => {
+        const g = segs[k], nx = segs[k + 1], ended = rows.filter(r => r.endM + 1 === m), lastM = m - 1;
+        const after = nx ? nx.base : 0, cs = nx ? nx.cs : g.cs + sumBy(ended, 'sil'), cd = nx ? nx.cd : g.cd + sumBy(ended, 'dx');
+        const who = ended.map(r => `${esc(r.p.insurer)}${ageOf(r.p, Math.floor(lastM / 12))}`).join(', ');
+        const first = ended.some(r => r.sil || r.dx);
+        const parts = [cs ? `실손 ${cs.toLocaleString()}원` : '', cd ? `진단비 갱신형 ${cd.toLocaleString()}원` : ''].filter(Boolean).join(' + ');
+        const note = (cs || cd) ? `<br><span class="cy">${parts}이 계속 나가면 월 ${(after + cs + cd).toLocaleString()}원${first ? ' (갱신형은 납입 완료 후에도 갱신 때마다 나갈 수 있어요)' : ''}</span>` : '';
+        return `<div class="tl-ev"><div class="h"><span class="w">${mTxt(lastM)} 납입 완료 <b class="yl">${relTxt(lastM - nowM)}</b></span><span class="a num">${after.toLocaleString()}원<small style="font-size:12px;font-weight:400;color:var(--text3)">/월</small></span></div><div class="d">${who} · 납입 기준 월 <span class="dn num">${(g.base - after).toLocaleString()}원 줄어요</span>${note}</div></div>`;
+      }).join('');
+
+      const rnPols = D.policies.filter(okPol).filter(p => paying(p) && p.renewal);
+      const rnRows = rnPols.map(p => {
+        let t = curTerm(p.renewal), last = t.last, [y, mo, d] = t.end.split('.').map(Number), out = [];
+        for (let k = 0; k < 3 && !last; k++) {
+          out.push(`${t.end.split('.').slice(0, 2).join('.')}${ageOf(p, y)}`);
+          const nxt = new Date(y + p.renewal.years, mo - 1, d); y = nxt.getFullYear();
+          t = { end: fmtD(nxt) }; if (p.renewal.until) { const [uy, um, ud] = p.renewal.until.split('.').map(Number); if (nxt >= new Date(uy, um - 1, ud)) last = true; }
+        }
+        const rp = renewParts(p), sp = [rp.sil ? `실손 ${rp.sil.toLocaleString()}원` : '', rp.dx ? `진단비 ${rp.dx.toLocaleString()}원` : ''].filter(Boolean).join(' · ');
+        return `<div class="payl"><span><i class="idot" style="--ic:${insColor(p.insurer)}"></i>${esc(p.insurer)} · ${p.renewal.years}년마다${sp ? `<br><small style="color:var(--text3)">${sp}</small>` : ''}</span><b class="num" style="text-align:right">${out.length ? out.join('<br>') : '마지막 구간'}</b></div>`;
+      });
+      const rnBlock = rnRows.length ? `<div class="tl-sec">다음 갱신 일정</div><div class="payb">${rnRows.map((r, n) => n ? r : r.replace('class="payl"', 'class="payl first"')).join('')}</div>` : '';
+
+      return `<div class="panel-title"><span>월 보험료 타임라인</span></div><div class="panel-caption">납입 완료 예정일이 지날 때마다 월 보험료가 어떻게 줄어드는지 보여줘요. 오늘 날짜 기준으로 자동 계산돼요.</div>${tog}${sum}<div class="tl-chart">${svg}${leg}</div><div class="tl-sec">변화 시점</div>${ev}${rnBlock}<div class="panel-caption" style="margin-top:14px">갱신형 담보는 납입기간과 별개로 갱신 때마다 보험료를 계속 내는 구조가 일반적이에요. 점선 영역은 갱신형 담보별 보험료 합계로 계산한 현재 기준 금액(실손은 '의료비' 담보)이고, 갱신 때 오를 수 있어요. '실손 제외하고 보기'는 실손을 해지하거나 바꾼다고 가정한 계산이에요. 이 계약이 실제로 그런지는 보험증서와 약관으로 확인하세요.${skip ? ` 납입 완료 예정일이 없는 ${skip}건은 제외했어요.` : ''}</div>`;
+    }
     function render() {
       renderStats(); renderDash();
-      $('tg').style.display = $('sb').style.display = st.v === 'sit' ? 'none' : '';
-      $('out').innerHTML = st.v === 'cmp' ? renderCmp() : st.v === 'sit' ? renderSit() : renderIns();
+      $('tg').style.display = $('sb').style.display = (st.v === 'sit' || st.v === 'tl') ? 'none' : '';
+      $('out').innerHTML = st.v === 'cmp' ? renderCmp() : st.v === 'sit' ? renderSit() : st.v === 'tl' ? renderTl() : renderIns();
     }
     function all() { applyRenewals(); renderChips(); render(); }
 
@@ -1637,6 +1857,7 @@
       else if (d.i) { st.i = d.i; renderChips(); render(); }
       else if (d.t) { st.t = d.t; renderChips(); render(); }
       else if (d.v) { st.v = d.v; renderChips(); render(); }
+      else if (d.nosil) { st.nosil = !st.nosil; render(); }
       else if (d.pol) { flip.has(d.pol) ? flip.delete(d.pol) : flip.add(d.pol); render(); }
     });
     document.body.addEventListener('click', e => {
