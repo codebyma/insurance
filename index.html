@@ -1236,6 +1236,13 @@
       font-weight: 500
     }
 
+    .tl-chart .tl-unit {
+      text-align: right;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px
+    }
+
     .tl-leg {
       display: flex;
       flex-wrap: wrap;
@@ -1816,7 +1823,7 @@
 
     const relTxt = n => { if (n <= 0) return '이번 달'; const y = Math.floor(n / 12), m = n % 12; return (y ? y + '년 ' : '') + (m ? m + '개월 ' : '') + '후'; };
     const mTxt = m => `${Math.floor(m / 12)}.${pad2(m % 12 + 1)}`;
-    const manTxt = n => (Math.round(n / 1000) / 10).toLocaleString() + '만';
+    const manTxt = n => (Math.round(n / 1000) / 10).toLocaleString();
     const birthOf = pol => (D.people.find(x => x.id === pol.owner) || {}).birth;
     const ageOf = (pol, y) => { const b = birthOf(pol); return b ? ` · ${person(pol.owner).name} ${y - b}세` : ''; };
     function paidCnt(p) {
@@ -1859,7 +1866,7 @@
         g.act.forEach(r => { svg += box(x0, w, acc, acc + r.pr, `fill:${insColor(r.p.insurer)}`); acc += r.pr; });
         if (g.cs) { svg += box(x0, w, acc, acc + g.cs, 'fill:url(#tlh);stroke:var(--text3);stroke-dasharray:3 2;stroke-width:1'); acc += g.cs; }
         if (g.cd) { svg += box(x0, w, acc, acc + g.cd, 'fill:url(#tlg);stroke:var(--gold);stroke-dasharray:3 2;stroke-width:1'); acc += g.cd; }
-        if (w >= 34) svg += `<text class="tv" x="${(x0 + w / 2).toFixed(1)}" y="${(Y(acc) - 5).toFixed(1)}" text-anchor="middle" font-size="11">${manTxt(g.base)}</text>`;
+        const mt = manTxt(g.base); if (w >= mt.length * 6 + 4) svg += `<text class="tv" x="${(x0 + w / 2).toFixed(1)}" y="${(Y(acc) - 5).toFixed(1)}" text-anchor="middle" font-size="10.5">${mt}</text>`;
       });
       pts.forEach((m, k) => {
         const x = X(m), anc = k === 0 ? 'start' : k === pts.length - 1 ? 'end' : 'middle';
@@ -1904,7 +1911,7 @@
       });
       const rnBlock = rnRows.length ? `<div class="tl-sec">다음 갱신 일정</div><div class="payb">${rnRows.map((r, n) => n ? r : r.replace('class="payl"', 'class="payl first"')).join('')}</div>` : '';
 
-      return `<div class="panel-title"><span>월 보험료 타임라인</span></div><div class="panel-caption">납입 완료 예정일이 지날 때마다 월 보험료가 어떻게 줄어드는지 보여줘요. 오늘 날짜 기준으로 자동 계산돼요.</div>${tog}${sum.replace(/<\/div>$/, paidSum + '</div>')}${paidList}<div class="tl-chart">${svg}${leg}</div><div class="tl-sec">변화 시점</div>${ev}${rnBlock}<div class="tl-sec">참고하세요</div><ul class="tl-notes"><li>갱신형 담보는 납입기간과 별개로 갱신 때마다 보험료를 계속 내는 구조가 일반적이에요. 이 계약도 그런지는 보험증서와 약관으로 확인하세요.</li><li>점선 영역은 갱신형 담보별 보험료 합계로 계산한 현재 기준 금액이에요. 실손은 '의료비' 담보이고, 갱신 때 오를 수 있어요.</li><li>'실손 제외하고 보기'는 실손을 해지하거나 바꾼다고 가정한 계산이에요.</li><li>지금까지 낸 보험료는 납입 시작일부터 오늘까지 낸 횟수에 현재 월 보험료를 곱한 값이에요. 갱신형 보험료가 달랐던 과거분은 실제와 다를 수 있어요.</li>${noPay.length ? `<li>납입 기간 정보가 없는 ${noPay.map(esc).join(', ')}은 제외했어요.</li>` : ''}${skip ? `<li>납입 완료 예정일이 없는 ${skip}건은 제외했어요.</li>` : ''}</ul>`;
+      return `<div class="panel-title"><span>월 보험료 타임라인</span></div><div class="panel-caption">납입 완료 예정일이 지날 때마다 월 보험료가 어떻게 줄어드는지 보여줘요. 오늘 날짜 기준으로 자동 계산돼요.</div>${tog}${sum.replace(/<\/div>$/, paidSum + '</div>')}${paidList}<div class="tl-chart"><div class="tl-unit">단위: 만원</div>${svg}${leg}</div><div class="tl-sec">변화 시점</div>${ev}${rnBlock}<div class="tl-sec">참고하세요</div><ul class="tl-notes"><li>갱신형 담보는 납입기간과 별개로 갱신 때마다 보험료를 계속 내는 구조가 일반적이에요. 이 계약도 그런지는 보험증서와 약관으로 확인하세요.</li><li>점선 영역은 갱신형 담보별 보험료 합계로 계산한 현재 기준 금액이에요. 실손은 '의료비' 담보이고, 갱신 때 오를 수 있어요.</li><li>'실손 제외하고 보기'는 실손을 해지하거나 바꾼다고 가정한 계산이에요.</li><li>지금까지 낸 보험료는 납입 시작일부터 오늘까지 낸 횟수에 현재 월 보험료를 곱한 값이에요. 갱신형 보험료가 달랐던 과거분은 실제와 다를 수 있어요.</li>${noPay.length ? `<li>납입 기간 정보가 없는 ${noPay.map(esc).join(', ')}은 제외했어요.</li>` : ''}${skip ? `<li>납입 완료 예정일이 없는 ${skip}건은 제외했어요.</li>` : ''}</ul>`;
     }
     function render() {
       renderStats(); renderDash();
