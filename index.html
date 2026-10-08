@@ -17,7 +17,7 @@
       --border-strong: #3a4149;
       --text1: #edf0f3;
       --text2: #aab3c0;
-      --text3: #8a94a3;
+      --text3: #a0aab8;
       --mint: #4ade9a;
       --mint-dim: #1f3a2c;
       --gold: #e8b04b;
@@ -47,16 +47,16 @@
 
     body.light-theme {
       --bg: #fff;
-      --surface1: #fff;
-      --surface2: #f7f8fa;
-      --border: #f0f1f3;
+      --surface1: #f5f6f8;
+      --surface2: #eef0f3;
+      --border: #e6e8ec;
       --border-strong: #e5e7eb;
       --text1: #191f28;
       --text2: #444f5d;
-      --text3: #6b7684;
-      --mint: #178a5c;
+      --text3: #556070;
+      --mint: #0f7a50;
       --mint-dim: #e6f7f0;
-      --gold: #a8720f;
+      --gold: #8c5c06;
       --gold-dim: #fbf3e2;
       --blue: #2f6fb0;
       --blue-dim: #eaf3fb;
@@ -1260,6 +1260,43 @@
       background: repeating-linear-gradient(45deg, var(--gold) 0 2px, transparent 2px 4px)
     }
 
+    .paid-rows {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-strong)
+    }
+
+    .paid-rows .payl b {
+      color: var(--text1);
+      font-weight: 500
+    }
+
+    .tl-notes {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0
+    }
+
+    .tl-notes li {
+      position: relative;
+      padding-left: 14px;
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text2)
+    }
+
+    .tl-notes li::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: .62em;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text3)
+    }
+
     .tl-sec {
       font-size: 15px;
       font-weight: 700;
@@ -1297,8 +1334,8 @@
     }
 
     .tl-ev .d {
-      font-size: 12px;
-      color: var(--text3);
+      font-size: 12.5px;
+      color: var(--text2);
       line-height: 1.55;
       margin-top: 5px
     }
@@ -1767,6 +1804,12 @@
     const manTxt = n => (Math.round(n / 1000) / 10).toLocaleString() + '만';
     const birthOf = pol => (D.people.find(x => x.id === pol.owner) || {}).birth;
     const ageOf = (pol, y) => { const b = birthOf(pol); return b ? ` · ${person(pol.owner).name} ${y - b}세` : ''; };
+    function paidCnt(p) {
+      const m = /^(\d{4})\.(\d+)\.(\d+)/.exec(p.period || ''); if (!m || !p.pay || !p.pay.end) return 0;
+      const sy = +m[1], sm = +m[2], sd = +m[3], now = new Date(), [ey, em] = p.pay.end.split('.').map(Number), last = ey * 12 + em - 1;
+      let n = 0; while (n < 1500 && sy * 12 + sm - 1 + n <= last && new Date(sy, sm - 1 + n, sd) <= now) n++;
+      return n;
+    }
     const isSil = i => /의료비/.test(i.rider + i.name);
     function renewParts(pol) {
       if (!pol.renewal) return { sil: 0, dx: 0 };
@@ -1815,6 +1858,14 @@
       const sub0 = ns ? '실손 제외 기준' : (silNow ? `실손 약 ${silNow.toLocaleString()}원 포함` : '');
       const sum = `<div class="tl-sum"><div class="metric"><div class="label">지금 월 보험료</div><div class="value num">${nowSum.toLocaleString()}원</div>${sub0 ? `<div class="sub">${sub0}</div>` : ''}</div><div class="metric"><div class="label">남은 납입 총액</div><div class="value num">${won(left)}</div><div class="sub">납입 완료 예정일 기준${ns ? ' · 실손 제외' : ''}</div></div></div>`;
 
+      const paidRows = D.policies.filter(okPol).filter(live).filter(p => p.premium && p.pay && p.pay.end && p.period).map(p => {
+        const n = paidCnt(p), pr = p.premium - (ns ? renewParts(p).sil : 0); return { p, n, v: pr * n };
+      }).filter(x => x.n);
+      const noPay = [...new Set(D.policies.filter(okPol).filter(live).filter(p => p.premium && !(p.pay && p.pay.end)).map(p => p.insurer))];
+      const paidTot = paidRows.reduce((a, x) => a + x.v, 0);
+      const paidSum = paidRows.length ? `<div class="metric full"><div class="label">지금까지 낸 보험료</div><div class="value num">${won(paidTot)}</div><div class="sub">현재 월 보험료 × 납입 횟수로 추정${ns ? ' · 실손 제외' : ''}</div><div class="paid-rows">${paidRows.map((x, n) => `<div class="payl ${n ? '' : 'first'}"><span><i class="idot" style="--ic:${insColor(x.p.insurer)}"></i>${esc(x.p.insurer)} · ${x.n}회</span><b class="num">${won(x.v)}</b></div>`).join('')}</div></div>` : '';
+      const paidList = '';
+
       const ev = pts.slice(1).map((m, k) => {
         const g = segs[k], nx = segs[k + 1], ended = rows.filter(r => r.endM + 1 === m), lastM = m - 1;
         const after = nx ? nx.base : 0, cs = nx ? nx.cs : g.cs + sumBy(ended, 'sil'), cd = nx ? nx.cd : g.cd + sumBy(ended, 'dx');
@@ -1838,7 +1889,7 @@
       });
       const rnBlock = rnRows.length ? `<div class="tl-sec">다음 갱신 일정</div><div class="payb">${rnRows.map((r, n) => n ? r : r.replace('class="payl"', 'class="payl first"')).join('')}</div>` : '';
 
-      return `<div class="panel-title"><span>월 보험료 타임라인</span></div><div class="panel-caption">납입 완료 예정일이 지날 때마다 월 보험료가 어떻게 줄어드는지 보여줘요. 오늘 날짜 기준으로 자동 계산돼요.</div>${tog}${sum}<div class="tl-chart">${svg}${leg}</div><div class="tl-sec">변화 시점</div>${ev}${rnBlock}<div class="panel-caption" style="margin-top:14px">갱신형 담보는 납입기간과 별개로 갱신 때마다 보험료를 계속 내는 구조가 일반적이에요. 점선 영역은 갱신형 담보별 보험료 합계로 계산한 현재 기준 금액(실손은 '의료비' 담보)이고, 갱신 때 오를 수 있어요. '실손 제외하고 보기'는 실손을 해지하거나 바꾼다고 가정한 계산이에요. 이 계약이 실제로 그런지는 보험증서와 약관으로 확인하세요.${skip ? ` 납입 완료 예정일이 없는 ${skip}건은 제외했어요.` : ''}</div>`;
+      return `<div class="panel-title"><span>월 보험료 타임라인</span></div><div class="panel-caption">납입 완료 예정일이 지날 때마다 월 보험료가 어떻게 줄어드는지 보여줘요. 오늘 날짜 기준으로 자동 계산돼요.</div>${tog}${sum.replace(/<\/div>$/, paidSum + '</div>')}${paidList}<div class="tl-chart">${svg}${leg}</div><div class="tl-sec">변화 시점</div>${ev}${rnBlock}<div class="tl-sec">참고하세요</div><ul class="tl-notes"><li>갱신형 담보는 납입기간과 별개로 갱신 때마다 보험료를 계속 내는 구조가 일반적이에요. 이 계약도 그런지는 보험증서와 약관으로 확인하세요.</li><li>점선 영역은 갱신형 담보별 보험료 합계로 계산한 현재 기준 금액이에요. 실손은 '의료비' 담보이고, 갱신 때 오를 수 있어요.</li><li>'실손 제외하고 보기'는 실손을 해지하거나 바꾼다고 가정한 계산이에요.</li><li>지금까지 낸 보험료는 납입 시작일부터 오늘까지 낸 횟수에 현재 월 보험료를 곱한 값이에요. 갱신형 보험료가 달랐던 과거분은 실제와 다를 수 있어요.</li>${noPay.length ? `<li>납입 기간 정보가 없는 ${noPay.map(esc).join(', ')}은 제외했어요.</li>` : ''}${skip ? `<li>납입 완료 예정일이 없는 ${skip}건은 제외했어요.</li>` : ''}</ul>`;
     }
     function render() {
       renderStats(); renderDash();
