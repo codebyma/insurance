@@ -532,6 +532,14 @@
       color: inherit
     }
 
+    .acc-bds {
+      display: inline-flex;
+      gap: 6px;
+      margin-left: 8px;
+      vertical-align: 2px;
+      letter-spacing: 0
+    }
+
     .acc-name {
       font-size: 13px;
       font-weight: 400;
@@ -1676,7 +1684,7 @@
         const groups = TAGS.filter(t => items.some(i => i.tag === t));
         return `<div class="acc ${open ? 'open' : ''} ${lv ? '' : 'exp'}" style="--ic:${insColor(pol.insurer)}">
       <button class="acc-head" data-pol="${esc(pol.id)}" aria-expanded="${open}">
-        <div><div class="acc-ins"><i class="idot"></i>${hl(pol.insurer)}</div><div class="acc-name">${hl(pol.product)}</div><div class="acc-sub"><span class="badge" style="color:${c}">${esc(o.name)}</span>${lv ? (pd ? '<span class="badge" style="color:var(--mint)">납입 완료</span>' : '') : '<span class="badge" style="color:var(--red)">만기</span>'}<span>${pol.items.length ? items.length + '/' + pol.items.length + '개' : '보장 내용 추가 예정'}</span>${pol.pay ? `<span>납입 ~${esc(pol.pay.end)} (${leftTxt(pol.pay)})</span>` : ''}</div></div>
+        <div><div class="acc-ins"><i class="idot"></i>${hl(pol.insurer)}<span class="acc-bds"><span class="badge" style="color:${c}">${esc(o.name)}</span>${lv ? (pd ? '<span class="badge" style="color:var(--mint)">납입 완료</span>' : '') : '<span class="badge" style="color:var(--red)">만기</span>'}</span></div><div class="acc-name">${hl(pol.product)}</div>${(() => { const cnt = !pol.items.length ? '보장 내용 추가 예정' : items.length !== pol.items.length ? items.length + '/' + pol.items.length + '개' : ''; const ps = /^(\d{4})\.(\d+)/.exec(pol.period || ''); const pay = pol.pay ? `${ps ? ps[1] + '.' + pad2(ps[2]) + ' ' : ''}~ ${esc(pol.pay.end)} (${leftTxt(pol.pay)})` : ''; const t = [cnt, pay].filter(Boolean).map(x => `<span>${x}</span>`).join(''); return t ? `<div class="acc-sub">${t}</div>` : ''; })()}</div>
         <div class="acc-right"><div class="acc-prem num">${pd ? (lv ? '납입 완료' : '납입 종료') : (pol.premium ? pol.premium.toLocaleString() + '원' : '미입력')}<small>${pd ? (pol.premium ? '종전 월 ' + pol.premium.toLocaleString() + '원' : '') : '월 보험료'}</small></div>${CHEV}</div>
       </button>
       <div class="acc-body">
